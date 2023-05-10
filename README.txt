@@ -22,7 +22,7 @@ View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 
 = Features (Free) =
 * Easy *[start-read-more]* and *[end-read-more]* shortcodes.
-* Gutenberg block (edit review layouts in the new WordPress editor!).
+* Support for inline breaks (great truncating short text such as testimonial and review quotes).
 * WordPress forum support.
 
 = Premium Features =
@@ -39,6 +39,12 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
     [start-read-more]
     [end-read-more]
+
+= Optional Shortcode Parameters =
+
+    [start-read-more inline=true][end-read-more]
+
+* inline...true or false.
 
 == Installation ==
 
