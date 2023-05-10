@@ -53,8 +53,8 @@
 function rmwpToggleReadMore( reviewId ){
 
     // Define targets.
-    var textToggle = jQuery( '#rmwp-button-wrap-' + reviewId ).siblings( ".rmwp-toggle" );
-    var ellipsis = jQuery( '#rmwp-button-wrap-' + reviewId ).children( ".ellipsis" );
+    var textToggle = jQuery( '#rmwp-toggle-' + reviewId );
+    var ellipsis = jQuery( '#rmwp-button-wrap-' + reviewId ).siblings( ".ellipsis" );
     var buttonToggle = jQuery( '#rmwp-button-wrap-' + reviewId ).children( "button" );
     var buttonToggleText = buttonToggle.html();
 

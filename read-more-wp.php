@@ -90,9 +90,6 @@ if ( function_exists( 'rmwp_fs' ) ) {
             // Load the essential plugin features.
             $plugin = new Read_More_Wp();
 
-            // Define plugin shortcodes
-            new Read_More_Wp_Shortcodes;
-
             //
             $plugin->run();
 
