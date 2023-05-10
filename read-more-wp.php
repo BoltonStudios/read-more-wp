@@ -87,7 +87,13 @@ if ( function_exists( 'rmwp_fs' ) ) {
          */
         function run_read_more_wp() {
 
+            // Load the essential plugin features.
             $plugin = new Read_More_Wp();
+
+            // Define plugin shortcodes
+            new Read_More_Wp_Shortcodes;
+
+            //
             $plugin->run();
 
         }

@@ -29,4 +29,56 @@
 	 * practising this, we should strive to set a better example in our own work.
 	 */
 
+    // Check if the document is ready.
+    $( function() {
+
+        // For each "read more" element, i.e., review...
+        $( ".rmwp-button-wrap" ).each( function(){
+
+            // Display the Read More button.
+            $( this ).show();
+        });
+
+        // For each review (toggle element).
+        $( ".rmwp-toggle" ).each( function(){
+
+            // Hide the non-excerpt text.
+            $( this ).hide();
+        });
+    });
+
 })( jQuery );
+
+// Define the onclick action event for the Read More button.
+function rmwpToggleReadMore( reviewId ){
+
+    // Define targets.
+    var textToggle = jQuery( '#rmwp-button-wrap-' + reviewId ).siblings( ".rmwp-toggle" );
+    var ellipsis = jQuery( '#rmwp-button-wrap-' + reviewId ).children( ".ellipsis" );
+    var buttonToggle = jQuery( '#rmwp-button-wrap-' + reviewId ).children( "button" );
+    var buttonToggleText = buttonToggle.html();
+
+    // Get the element, i.e., the review text, associated with the clicked button.
+    jQuery( textToggle ).each( function(){
+
+        // Toggle its visibility.
+        jQuery( this ).toggle();
+
+        // Toggle the ellipsis visibility.
+        ellipsis.toggle();
+
+        // Toggle the button's "open" class.
+        buttonToggle.toggleClass( 'open' );
+    });
+
+    // If the button text says "Continue"...
+    if( buttonToggleText == "More" ){
+
+        // Change the button text to "Less".
+        jQuery( buttonToggle ).html( "Less" )
+    } else{
+
+        // Otherwise, change the button text to "More".
+        jQuery( buttonToggle ).html( "More" )
+    }
+}
