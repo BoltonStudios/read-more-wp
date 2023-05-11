@@ -50,14 +50,37 @@
 })( jQuery );
 
 // Define the onclick action event for the Read More button.
-function rmwpToggleReadMore( reviewId ){
+function rmwpToggleReadMore( rmwpID, moreLabel, defaultMoreLabel, lessLabel, defaultLessLabel ){
+
+    console.log( "start...moreLabel is " + moreLabel );
+    console.log( "start...lessLabel is " + lessLabel );
 
     // Define targets.
-    var textToggle = jQuery( '#rmwp-toggle-' + reviewId );
-    var ellipsis = jQuery( '#ellipsis-' + reviewId );
-    var buttonWrap =jQuery( '#rmwp-button-wrap-' + reviewId );
-    var buttonToggle = buttonWrap.children( "button" );
-    var buttonToggleText = buttonToggle.html();
+    var textToggle          = jQuery( '#rmwp-toggle-' + rmwpID );
+    var ellipsis            = jQuery( '#ellipsis-' + rmwpID );
+    var buttonWrap          = jQuery( '#rmwp-button-wrap-' + rmwpID );
+    var buttonToggle        = buttonWrap.children( "button" );
+    var buttonToggleText    = buttonToggle.text();
+    
+    //
+    if( moreLabel == 0 ){
+
+        // Use the default value.
+        moreLabel = defaultMoreLabel;
+
+        // Return feedback to the user.
+        console.log( "Read More WP: Invalid 'more' label. Reverting to default label." )
+    }
+
+    //
+    if( lessLabel == 0 ){
+
+        // Use the default value.
+        lessLabel = defaultLessLabel;
+
+        // Return feedback to the user.
+        console.log( "Read More WP: Invalid 'less' label. Reverting to default label." )
+    }
 
     // Get the element, i.e., the review text, associated with the clicked button.
     jQuery( textToggle ).each( function(){
@@ -74,20 +97,23 @@ function rmwpToggleReadMore( reviewId ){
     });
 
     // If the button text says "Continue"...
-    if( buttonToggleText == "More" ){
+    if( buttonToggleText == moreLabel ){
 
         // Change the button text to "Less".
-        jQuery( buttonToggle ).html( "Less" )
+        jQuery( buttonToggle ).text( lessLabel )
 
-        //
+        // Move button to the end of the toggled text.
         buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
 
     } else{
 
         // Otherwise, change the button text to "More".
-        jQuery( buttonToggle ).html( "More" )
+        jQuery( buttonToggle ).text( moreLabel )
 
-        //
+        // Move button to the toggled text break point.
         buttonWrap.insertAfter( ellipsis );
     }
+
+    console.log( "end...moreLabel is " + moreLabel );
+    console.log( "end...lessLabel is " + lessLabel );
 }

@@ -137,29 +137,34 @@ class Read_More_Wp_Public {
 	 */
     function construct_start_read_more( $user_attributes ){
 
-        // Initialize variables.
+        // Initialize variables with default values.
         $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
-        $button     = '<button name="read more" type="button" onclick="rmwpToggleReadMore( '. $rmwp_id .' )">More</button>';
-        $ellipsis   = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'">...</span>';
-        $break      = '<div class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
         $inline     = false;
-
-        $read_more  = '<span class="rmwp-button-wrap" id="rmwp-button-wrap-'. $rmwp_id .'" style="display: none;">';
-        $read_more .= $button;
-        $read_more .= '</span>';
+        $break      = '';
+        $default_more_label = 'Read More';
+        $default_less_label = 'Read Less';
 
         // Handle attributes.
         if( isset( $user_attributes ) ){
             
             // Set list of supported attributes and their default values.
-            $supported_attributes = array( 'inline' => $inline );
+            $supported_attributes = array( 'inline' => $inline , 'more' => $default_more_label, 'less' => $default_less_label );
 
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
             
-            // Update the $inline variable.
-            $inline = $attributes[ 'inline' ];
-        } 
+            // Assign attribute values to the corresponding local variables.
+            $inline     = htmlspecialchars( esc_attr__( $attributes[ 'inline' ] ), ENT_QUOTES);
+            $more_label = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
+            $less_label = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
+
+        } else{
+
+            // If no attributes, assign the default values to the label variables.
+            $more_label = $default_more_label;
+            $less_label = $default_less_label;
+        }
+        
 
         // If the local inline variable is true...
         if( $inline == true ){
@@ -174,11 +179,24 @@ class Read_More_Wp_Public {
 
         } else{
 
+            // Change from the opening element from span to div div.
+            $break = '<div class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
+
             // Set the class instance variable to false.
             $this->inline = false;
         }
         
-        // Construct the output.
+        // Construct the output elements.
+        $btn_args   = "'$rmwp_id', '$more_label', '$default_more_label', '$less_label', '$default_less_label'";
+        $button     = '<button name="read more" type="button" onclick="rmwpToggleReadMore( '. $btn_args .' )">';
+        $button    .= $more_label;
+        $button    .='</button>';
+        $read_more  = '<span class="rmwp-button-wrap" id="rmwp-button-wrap-'. $rmwp_id .'" style="display: none;">';
+        $read_more .= $button;
+        $read_more .= '</span>';
+        $ellipsis   = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'">...</span>';
+
+        // Assemble the output.
         $output  =  $ellipsis;
         $output .=  $read_more;
         $output .=  $break;

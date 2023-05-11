@@ -45,8 +45,8 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
     [start-read-more more="Read More" less="Read Less" inline=false ellipsis=true][end-read-more]
 
-* more..."Read More" or another prompt.
-* less..."Read Less" or another prompt.
+* more..."Read More" or another button label.
+* less..."Read Less" or another button label.
 * inline...true or false.
 * ellipsis...true or false.
 
