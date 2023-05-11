@@ -141,14 +141,14 @@ class Read_More_Wp_Public {
         $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
         $inline     = false;
         $break      = '';
-        $default_more_label = 'Read More';
-        $default_less_label = 'Read Less';
+        $more_label = 'Read More';
+        $less_label = 'Read Less';
 
         // Handle attributes.
         if( isset( $user_attributes ) ){
             
             // Set list of supported attributes and their default values.
-            $supported_attributes = array( 'inline' => $inline , 'more' => $default_more_label, 'less' => $default_less_label );
+            $supported_attributes = array( 'inline' => $inline , 'more' => $more_label, 'less' => $less_label );
 
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
@@ -158,11 +158,6 @@ class Read_More_Wp_Public {
             $more_label = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
             $less_label = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
 
-        } else{
-
-            // If no attributes, assign the default values to the label variables.
-            $more_label = $default_more_label;
-            $less_label = $default_less_label;
         }
         
 
@@ -187,7 +182,7 @@ class Read_More_Wp_Public {
         }
         
         // Construct the output elements.
-        $btn_args   = "'$rmwp_id', '$more_label', '$default_more_label', '$less_label', '$default_less_label'";
+        $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
         $button     = '<button name="read more" type="button" onclick="rmwpToggleReadMore( '. $btn_args .' )">';
         $button    .= $more_label;
         $button    .='</button>';

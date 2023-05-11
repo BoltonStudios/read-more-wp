@@ -50,7 +50,7 @@
 })( jQuery );
 
 // Define the onclick action event for the Read More button.
-function rmwpToggleReadMore( rmwpID, moreLabel, defaultMoreLabel, lessLabel, defaultLessLabel ){
+function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
 
     console.log( "start...moreLabel is " + moreLabel );
     console.log( "start...lessLabel is " + lessLabel );
@@ -61,26 +61,6 @@ function rmwpToggleReadMore( rmwpID, moreLabel, defaultMoreLabel, lessLabel, def
     var buttonWrap          = jQuery( '#rmwp-button-wrap-' + rmwpID );
     var buttonToggle        = buttonWrap.children( "button" );
     var buttonToggleText    = buttonToggle.text();
-    
-    //
-    if( moreLabel == 0 ){
-
-        // Use the default value.
-        moreLabel = defaultMoreLabel;
-
-        // Return feedback to the user.
-        console.log( "Read More WP: Invalid 'more' label. Reverting to default label." )
-    }
-
-    //
-    if( lessLabel == 0 ){
-
-        // Use the default value.
-        lessLabel = defaultLessLabel;
-
-        // Return feedback to the user.
-        console.log( "Read More WP: Invalid 'less' label. Reverting to default label." )
-    }
 
     // Get the element, i.e., the review text, associated with the clicked button.
     jQuery( textToggle ).each( function(){
