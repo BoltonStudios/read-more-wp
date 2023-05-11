@@ -26,6 +26,7 @@ View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 * WordPress forum support.
 
 = Premium Features =
+* Animated transitions.
 * Priority email support.
 * [Get the Premium Version](https://www.boltonstudios.com/read-more-wp/).
 
@@ -42,9 +43,12 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 = Optional Shortcode Parameters =
 
-    [start-read-more inline=true][end-read-more]
+    [start-read-more more="Read More" less="Read Less" inline=false ellipsis=true][end-read-more]
 
+* more..."Read More" or another prompt.
+* less..."Read Less" or another prompt.
 * inline...true or false.
+* ellipsis...true or false.
 
 == Installation ==
 

@@ -54,8 +54,9 @@ function rmwpToggleReadMore( reviewId ){
 
     // Define targets.
     var textToggle = jQuery( '#rmwp-toggle-' + reviewId );
-    var ellipsis = jQuery( '#rmwp-button-wrap-' + reviewId ).siblings( ".ellipsis" );
-    var buttonToggle = jQuery( '#rmwp-button-wrap-' + reviewId ).children( "button" );
+    var ellipsis = jQuery( '#ellipsis-' + reviewId );
+    var buttonWrap =jQuery( '#rmwp-button-wrap-' + reviewId );
+    var buttonToggle = buttonWrap.children( "button" );
     var buttonToggleText = buttonToggle.html();
 
     // Get the element, i.e., the review text, associated with the clicked button.
@@ -69,6 +70,7 @@ function rmwpToggleReadMore( reviewId ){
 
         // Toggle the button's "open" class.
         buttonToggle.toggleClass( 'open' );
+
     });
 
     // If the button text says "Continue"...
@@ -76,9 +78,16 @@ function rmwpToggleReadMore( reviewId ){
 
         // Change the button text to "Less".
         jQuery( buttonToggle ).html( "Less" )
+
+        //
+        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
+
     } else{
 
         // Otherwise, change the button text to "More".
         jQuery( buttonToggle ).html( "More" )
+
+        //
+        buttonWrap.insertAfter( ellipsis );
     }
 }

@@ -140,7 +140,7 @@ class Read_More_Wp_Public {
         // Initialize variables.
         $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
         $button     = '<button name="read more" type="button" onclick="rmwpToggleReadMore( '. $rmwp_id .' )">More</button>';
-        $ellipsis   = '<span class="ellipsis">...</span>';
+        $ellipsis   = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'">...</span>';
         $break      = '<div class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
         $inline     = false;
 
@@ -157,7 +157,7 @@ class Read_More_Wp_Public {
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
             
-            // Update the inline variable.
+            // Update the $inline variable.
             $inline = $attributes[ 'inline' ];
         } 
 
@@ -170,7 +170,7 @@ class Read_More_Wp_Public {
             $this->inline = true;
 
             // Change from the opening element from div to span.
-            $break      = '<span class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
+            $break = '<span class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
 
         } else{
 
@@ -198,12 +198,12 @@ class Read_More_Wp_Public {
         if( $this->inline == true ){
 
             // Set the closing element as a span.
-            $output = '</span>';
+            $output = '</span><span class="rmwp-toggle-end"></span>';
 
         } else{
 
             // Set the closing element as a div.
-            $output = '</div><div class="rmwp-toggle-end">';
+            $output = '</div><div class="rmwp-toggle-end"></div>';
         }
         
         // Return the output.
