@@ -31,6 +31,15 @@ class Read_More_Wp_Admin {
 	 */
 	private $plugin_name;
 
+    /**
+     * The ID of this plugin.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      string    $plugin_slug    The ID of this plugin.
+     */
+    private $plugin_slug;
+
 	/**
 	 * The version of this plugin.
 	 *
@@ -40,6 +49,24 @@ class Read_More_Wp_Admin {
 	 */
 	private $version;
 
+    /**
+     * The tabs that separate plugin options in the admin interface.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      object  
+     */
+    private $tabs;
+
+    /**
+     * The object that contains methods used to build the plugin settings.
+     *
+     * @since    1.1.0
+     * @access   private
+     * @var      Read_More_Wp_Settings 
+     */
+    private $settings;
+
 	/**
 	 * Initialize the class and set its properties.
 	 *
@@ -47,12 +74,166 @@ class Read_More_Wp_Admin {
 	 * @param      string    $plugin_name       The name of this plugin.
 	 * @param      string    $version    The version of this plugin.
 	 */
-	public function __construct( $plugin_name, $version ) {
+	public function __construct( $plugin_name, $plugin_slug, $version, $settings ) {
 
 		$this->plugin_name = $plugin_name;
-		$this->version = $version;
+        $this->plugin_slug = $plugin_slug;
+        $this->version = $version;
+        $this->settings = $settings;
+        $this->tabs = $settings->get_tabs();
 
 	}
+
+    // Methods
+    /**
+     * Add plugin admin options page
+     *
+     * @since    1.0.0
+     */
+    public function add_options_page(){
+        
+        add_menu_page(
+            $this->plugin_name, // $page_title
+            'Read More WP', // $menu_title
+            'manage_options', // $capability
+            $this->plugin_slug, // $menu_slug
+            array($this, 'render_settings_page'), // $function,
+            'dashicons-star-filled' // string $icon_url
+        );
+    }
+
+    /**
+     * Add action links to the plugin in the Plugins list table
+     *
+     * @since    1.1.0
+     */
+    public function admin_plugin_listing_actions( $links ) {
+        
+        $action_links = [];
+        $action_links = array(
+            'settings' => '<a href="' . admin_url( 'admin.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'domain' ) . '</a>',
+        );
+        return array_merge( $action_links, $links );
+    }
+
+    /**
+     * Register the plugin settings
+     *
+     * @since    1.1.0
+     */
+    public function init_settings(){
+
+        // Register sections in the settings page
+    
+        // Tabs
+        foreach($this->tabs as $tab){
+            register_setting(
+                $tab[1], // option group
+                $tab[2] // option name
+            );
+        }
+        // Sections
+        foreach($this->settings->get_sections() as $section){
+            add_settings_section(
+                $section['id'], // id
+                $section['title'], // title
+                $section['id'] . '_cb', // callback
+                $section['page'] // page
+            );
+        }
+        // Fields
+        foreach($this->settings->get_settings() as $setting){
+            add_settings_field(
+                $setting['id'],
+                $setting['title'],
+                $setting['callback'],
+                $setting['tab'],
+                $setting['section'], 
+                [
+                    'label_for' => $setting['id'],
+                    'class' => 'rmwp_row'
+                ]
+            );
+        }
+
+        /*
+        *
+        *  Free Plugin Version Callbacks
+        * 
+        */
+
+        // Section Callbacks
+        // Section callbacks accept an $args parameter, which is an array.
+        // $args have the following keys defined: id, title, callback.
+        // the values are defined at the add_settings_section() function.
+
+        // Professional Reviews Section
+        function rmwp_settings_intro_section_output_cb( $args ) {
+            ?>
+            <hr />
+            <p id="<?php echo esc_attr( $args['id'] ); ?>-2">
+                <strong style="font-size: 14px">Shortcode</strong><br/>[start-read-more][end-read-more]
+            </p>
+            <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
+                Example shortcode with overrides:<br />[start-read-more more="Read More" less="Read Less" inline=false ellipsis=true][end-read-more]
+
+            </p>
+            <?php
+        }
+        //
+        function rmwp_section_for_defaults_cb( $args ) {
+            ?>
+            <hr />
+            <p id="<?php echo esc_attr( $args['id'] ); ?>">
+                Please find the default plugin settings below. You may override the default settings using the widget, block, and shortcode options.
+            </p>
+            <?php
+        }
+        function rmwp_section_for_support_cb( $args ) {
+            
+            ?>
+            <hr />
+            <p>
+                Your PHP version is <?php echo PHP_VERSION; ?>.
+            </p>
+            <hr />
+            <?php
+        }
+        // Field Callbacks
+        // Field callbacks can accept an $args parameter, which is an array.
+        // $args is defined at the add_settings_field() function.
+        // wordpress has magic interaction with the following keys: label_for, class.
+        // the "label_for" key value is used for the "for" attribute of the <label>.
+        // the "class" key value is used for the "class" attribute of the <tr> containing the field.
+        // you can add custom key value pairs to be used inside your callbacks.
+
+        // Read More Default Text callback
+        function rmwp_more_button_label_field_cb( $args ) {
+            
+            // Get the value of the setting we've registered with register_setting()
+            $options = get_option('rmwp_general_options');
+            
+            $setting = ''; // More Button label
+            if( isset( $options[$args['label_for']] ) ){
+                $setting = $options[$args['label_for']];
+            };
+            ?>
+
+            <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">"More" Button Label</label>
+            <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" />
+
+            <?php
+        }
+    }
+
+    /**
+     * Include the HTML code to display the settings page tabs and more.
+     *
+     * @since    1.1.0
+     */
+    public function render_settings_page() {
+        require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/read-more-wp-admin-display.php';
+    }
 
 	/**
 	 * Register the stylesheets for the admin area.

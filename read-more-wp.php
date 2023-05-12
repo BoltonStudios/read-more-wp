@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
 // The Freemius SDK comes with a special mechanism to auto deactivate the free version when activating the paid one.
 if ( function_exists( 'rmwp_fs' ) ) {
 
-    ezrwp_fs()->set_basename( true, __FILE__ );
+    //rmwp_fs()->set_basename( true, __FILE__ );
 
 } else {
 
@@ -88,7 +88,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
         function run_read_more_wp() {
 
             // Load the essential plugin features.
-            $plugin = new Read_More_Wp();
+            $plugin = new Read_More_Wp( READ_MORE_WP_BASENAME );
 
             //
             $plugin->run();

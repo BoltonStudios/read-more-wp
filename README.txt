@@ -47,8 +47,8 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 * more..."Read More" or another button label.
 * less..."Read Less" or another button label.
-* inline...true or false.
-* ellipsis...true or false.
+* inline...true or false. Default: false.
+* ellipsis...true or false. Default: true.
 
 == Installation ==
 

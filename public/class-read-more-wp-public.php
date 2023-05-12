@@ -40,6 +40,15 @@ class Read_More_Wp_Public {
 	 */
 	private $version;
 
+    /**
+     * The user's settings from the General admin tab.
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      array    $general_options    The user's settings from the General admin tab.
+     */
+    private $general_options;
+
 	/**
 	 * Description
 	 *
@@ -61,6 +70,9 @@ class Read_More_Wp_Public {
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
         $this->inline = false;
+
+        //
+        $this->general_options = get_option( 'rmwp_general_options' );
 
         // Run the init() function once the activated plugins have loaded.
         add_action( 'plugins_loaded', array( $this, 'init' ) );
@@ -141,7 +153,7 @@ class Read_More_Wp_Public {
         $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
         $inline     = false;
         $break      = '';
-        $more_label = 'Read More';
+        $more_label = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : null;
         $less_label = 'Read Less';
 
         // Handle attributes.
@@ -222,5 +234,14 @@ class Read_More_Wp_Public {
         // Return the output.
         return $output;
     }
+        
+    /**
+     * Get the value of general_options
+     *
+     * @since    1.0.0
+     */
+    public function get_general_options(){
 
+        return $this->general_options;
+    }
 }
