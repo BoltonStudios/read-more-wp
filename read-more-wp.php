@@ -35,7 +35,7 @@ if ( ! defined( 'WPINC' ) ) {
 // The Freemius SDK comes with a special mechanism to auto deactivate the free version when activating the paid one.
 if ( function_exists( 'rmwp_fs' ) ) {
 
-    //rmwp_fs()->set_basename( true, __FILE__ );
+    rmwp_fs()->set_basename( true, __FILE__ );
 
 } else {
 
@@ -75,6 +75,54 @@ if ( function_exists( 'rmwp_fs' ) ) {
          * admin-specific hooks, and public-facing site hooks.
          */
         require plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp.php';
+        
+        if ( ! function_exists( 'rmwp_fs' ) ) {
+
+            // Create a helper function for easy SDK access.
+            function rmwp_fs() {
+
+                global $rmwp_fs;
+        
+                if ( ! isset( $rmwp_fs ) ) {
+
+                    // Include Freemius SDK.
+                    require_once dirname(__FILE__) . '/freemius/start.php';
+        
+                    $rmwp_fs = fs_dynamic_init( array(
+                        'id'                  => '12677',
+                        'slug'                => 'read-more-wp',
+                        'premium_slug'        => 'read-more-wp-plus',
+                        'type'                => 'plugin',
+                        'public_key'          => 'pk_42b15e73d8e69906aae9a2d9ecfd9',
+                        'is_premium'          => true,
+                        'premium_suffix'      => 'Plus',
+                        // If your plugin is a serviceware, set this option to false.
+                        'has_premium_version' => true,
+                        'has_addons'          => false,
+                        'has_paid_plans'      => true,
+                        'menu'                => array(
+                            'slug'           => 'read-more-wp',
+                            'contact'        => false,
+                            'support'        => false,
+                            'parent'         => array(
+                                'slug' => 'options-general.php',
+                            ),
+                        ),
+                        // Set the SDK to work in a sandbox mode (for development & testing).
+                        // IMPORTANT: MAKE SURE TO REMOVE SECRET KEY BEFORE DEPLOYMENT.
+                        'secret_key'          => 'sk_rY?z3HJS=Ga<J6[;YgNeQ#vM7vr>X',
+                    ) );
+                }
+        
+                return $rmwp_fs;
+            }
+        
+            // Init Freemius.
+            rmwp_fs();
+
+            // Signal that SDK was initiated.
+            do_action( 'rmwp_fs_loaded' );
+        }
 
         /**
          * Begins execution of the plugin.
