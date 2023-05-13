@@ -123,8 +123,17 @@ if ( ! class_exists( 'Read_More_Wp_Settings' ) ) {
             //
             $settings[] = array(
                 'id'        => 'rmwp_more_button_label', // id. Used only internally.
-                'title'     => __( 'More Button Label' ), // title.
+                'title'     => __( 'Read More Button Label' ), // title.
                 'callback'  => 'rmwp_more_button_label_field_cb', // callback.
+                'tab'       => 'rmwp_general', // page
+                'section'   => 'rmwp_section_for_defaults'
+            );
+
+            //
+            $settings[] = array(
+                'id'        => 'rmwp_less_button_label', // id. Used only internally.
+                'title'     => __( 'Read Less Button Label' ), // title.
+                'callback'  => 'rmwp_less_button_label_field_cb', // callback.
                 'tab'       => 'rmwp_general', // page
                 'section'   => 'rmwp_section_for_defaults'
             );

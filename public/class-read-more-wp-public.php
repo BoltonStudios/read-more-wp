@@ -153,8 +153,8 @@ class Read_More_Wp_Public {
         $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
         $inline     = false;
         $break      = '';
-        $more_label = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : null;
-        $less_label = 'Read Less';
+        $more_label = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
+        $less_label = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
 
         // Handle attributes.
         if( isset( $user_attributes ) ){

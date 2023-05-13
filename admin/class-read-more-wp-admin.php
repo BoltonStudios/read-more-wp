@@ -92,13 +92,14 @@ class Read_More_Wp_Admin {
      */
     public function add_options_page(){
         
-        add_menu_page(
-            $this->plugin_name, // $page_title
-            'Read More WP', // $menu_title
-            'manage_options', // $capability
-            $this->plugin_slug, // $menu_slug
-            array($this, 'render_settings_page'), // $function,
-            'dashicons-star-filled' // string $icon_url
+        // Add a new Sub-menu to WordPress Administration.
+        add_submenu_page(
+            'options-general.php', // string $parent_slug
+            $this->plugin_name, // string $page_title
+            $this->plugin_name, // string $menu_title
+            'manage_options', // string $capability
+            $this->plugin_slug, // string $menu_slug
+            array( $this, 'render_settings_page' ) // callable $function = ''
         );
     }
 
@@ -124,6 +125,10 @@ class Read_More_Wp_Admin {
     public function init_settings(){
 
         // Register sections in the settings page
+        register_setting(
+            'rmwp_plus', // option group
+            'rmwp_plus_options' // option name
+        );
     
         // Tabs
         foreach($this->tabs as $tab){
@@ -167,26 +172,21 @@ class Read_More_Wp_Admin {
         // $args have the following keys defined: id, title, callback.
         // the values are defined at the add_settings_section() function.
 
-        // Professional Reviews Section
-        function rmwp_settings_intro_section_output_cb( $args ) {
+        //
+        function rmwp_section_for_defaults_cb( $args ) {
             ?>
+            <p id="<?php echo esc_attr( $args['id'] ); ?>">
+                Please find the default plugin settings below. You may override the default settings using the shortcode options.
+            </p>
             <hr />
             <p id="<?php echo esc_attr( $args['id'] ); ?>-2">
                 <strong style="font-size: 14px">Shortcode</strong><br/>[start-read-more][end-read-more]
             </p>
             <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
-                Example shortcode with overrides:<br />[start-read-more more="Read More" less="Read Less" inline=false ellipsis=true][end-read-more]
+                Example shortcode with overrides:<br />[start-read-more more="Show More" less="Show Less" inline=false ellipsis=true][end-read-more]
 
             </p>
-            <?php
-        }
-        //
-        function rmwp_section_for_defaults_cb( $args ) {
-            ?>
             <hr />
-            <p id="<?php echo esc_attr( $args['id'] ); ?>">
-                Please find the default plugin settings below. You may override the default settings using the widget, block, and shortcode options.
-            </p>
             <?php
         }
         function rmwp_section_for_support_cb( $args ) {
@@ -219,7 +219,25 @@ class Read_More_Wp_Admin {
             };
             ?>
 
-            <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">"More" Button Label</label>
+            <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">"Read More" Button Label</label>
+            <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" />
+
+            <?php
+        }
+
+        // Read Less Default Text callback
+        function rmwp_less_button_label_field_cb( $args ) {
+            
+            // Get the value of the setting we've registered with register_setting()
+            $options = get_option('rmwp_general_options');
+            
+            $setting = ''; // More Button label
+            if( isset( $options[$args['label_for']] ) ){
+                $setting = $options[$args['label_for']];
+            };
+            ?>
+
+            <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">"Read Less" Button Label</label>
             <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" />
 
             <?php

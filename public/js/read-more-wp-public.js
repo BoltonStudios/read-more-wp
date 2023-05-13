@@ -71,6 +71,9 @@ function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
         // Toggle the ellipsis visibility.
         ellipsis.toggle();
 
+        // Toggle the text wrapper's "open" class.
+        jQuery( this ).toggleClass( 'open' );
+
         // Toggle the button's "open" class.
         buttonToggle.toggleClass( 'open' );
 
