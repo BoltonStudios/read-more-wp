@@ -180,7 +180,8 @@ class Read_More_Wp_Admin {
             </p>
             <hr />
             <p id="<?php echo esc_attr( $args['id'] ); ?>-2">
-                <strong style="font-size: 14px">Shortcode</strong><br/>[start-read-more][end-read-more]
+                <strong style="font-size: 14px">Shortcode</strong><br/>
+                [start-read-more][end-read-more]
             </p>
             <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
                 Example shortcode with overrides:<br />[start-read-more more="Show More" less="Show Less" inline=false ellipsis=true][end-read-more]
@@ -194,6 +195,21 @@ class Read_More_Wp_Admin {
             ?>
             <hr />
             <p>
+                <strong style="font-size: 14px">Get Help</strong><br/>
+                Have a question? Choose a Support option below:
+                <ul>
+                    <li>
+                    <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
+                    Send a message using the <a href="/wp-admin/options-general.php?page=read-more-wp-contact">Contact Form</a>.
+                    </li>
+                    <li>
+                    <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
+                        Open a ticket on the <a href="https://wordpress.org/support/plugin/read-more-wp/" target="_blank" style="text-decoration: none;">Support Forum. <span class="dashicons dashicons-external" style="font-size: 14px;"></span></a>
+                    </li>
+                </ul>
+            </p>
+            <p>
+                <strong style="font-size: 14px">Debugging Information</strong><br/>
                 Your PHP version is <?php echo PHP_VERSION; ?>.
             </p>
             <hr />

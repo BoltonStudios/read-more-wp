@@ -24,7 +24,7 @@
  * Text Domain:       read-more-wp
  * Domain Path:       /languages
  *
- * @fs_premium_only /premium/
+ * @fs_premium_only /plus/
  */
 
 // If this file is called directly, abort.
@@ -138,6 +138,18 @@ if ( function_exists( 'rmwp_fs' ) ) {
             // Load the essential plugin features.
             $plugin = new Read_More_Wp( READ_MORE_WP_BASENAME );
 
+            // This IF block will be auto removed from the Free version.
+            if ( rmwp_fs()->is__premium_only() ) {
+
+                // This IF will be executed only if the user in a trial mode or have a valid license.
+                if ( rmwp_fs()->can_use_premium_code() ) {
+
+                    // ... premium only logic ...
+                    //wp_enqueue_style( $plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'plus/css/read-more-wp-plus.css', array(), $plugin->get_version(), 'all' );
+                    //$plugin->loader->add_filter();
+                }
+            }
+            
             //
             $plugin->run();
 

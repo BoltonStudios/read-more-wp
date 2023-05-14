@@ -90,6 +90,11 @@ if ( ! class_exists( 'Read_More_Wp_Settings' ) ) {
                 'rmwp_general', //option group
                 'rmwp_general_options' // option name
             );
+            $tabs[] = array(
+                'Support', //display name
+                'rmwp_support', //option group
+                'rmwp_support_options' // option name
+            );
             return $tabs;
         }
         
@@ -107,8 +112,8 @@ if ( ! class_exists( 'Read_More_Wp_Settings' ) ) {
             );
             $sections[] = array(
                 'id'  => 'rmwp_section_for_support', // id
-                'title'  => __( 'Debugging Information', 'ezrwp_general' ), // title
-                'page'  => 'rmwp_general' // page
+                'title'  => __( 'Support', 'rmwp_general' ), // title
+                'page'  => 'rmwp_support' // page
             );
 
             return $sections;

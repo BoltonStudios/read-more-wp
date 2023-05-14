@@ -1,0 +1,7 @@
+.rmwp-toggle {
+  opacity: 0;
+  transition: 1s;
+}
+.rmwp-toggle.open {
+  opacity: 1;
+}
