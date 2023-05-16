@@ -103,6 +103,47 @@ function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
                     buttonToggle.fadeToggle( 300 );
                 });
             });
+
+        } else if( jQuery( this ).hasClass( 'fade' ) == true ){
+            
+            // Toggle the ellipsis visibility.
+            ellipsis.fadeToggle( 200 );
+
+            //
+            buttonToggle.fadeToggle( 300, function() {
+
+                //
+                jQuery( textToggle ).fadeToggle( 700, function() {
+                    // Animation complete.
+
+                    // Toggle the text wrapper's "open" class.
+                    jQuery( this ).toggleClass( 'open' );
+            
+                    // Toggle the button's "open" class.
+                    buttonToggle.toggleClass( 'open' );
+
+                    // If the button text says "Continue"...
+                    if( buttonToggleText == moreLabel ){
+
+                        // Change the button text to "Less".
+                        jQuery( buttonToggle ).text( lessLabel )
+
+                        // Move button to the end of the toggled text.
+                        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
+
+                    } else{
+
+                        // Otherwise, change the button text to "More".
+                        jQuery( buttonToggle ).text( moreLabel )
+
+                        // Move button to the toggled text break point.
+                        buttonWrap.insertAfter( ellipsis );
+                    }
+
+                    //
+                    buttonToggle.fadeToggle( 300 );
+                });
+            });
             
         } else{
     
