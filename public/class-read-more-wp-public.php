@@ -115,7 +115,7 @@ class Read_More_Wp_Public {
 		 * class.
 		 */
 
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/read-more-wp-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name. '-public-css', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-public.css', array(), $this->version, 'all' );
 
 	}
 
@@ -138,7 +138,7 @@ class Read_More_Wp_Public {
 		 * class.
 		 */
 
-		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/read-more-wp-public.js', array( 'jquery' ), $this->version, false );
+		wp_enqueue_script( $this->plugin_name . '-public-js', plugin_dir_url( __FILE__ ) . 'js/read-more-wp-public.js', array( 'jquery' ), $this->version, false );
 
 	}
 
@@ -153,6 +153,7 @@ class Read_More_Wp_Public {
         $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
         $inline     = false;
         $break      = '';
+        $classes    = '';
         $more_label = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
         $less_label = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
 
@@ -171,7 +172,6 @@ class Read_More_Wp_Public {
             $less_label = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
 
         }
-        
 
         // If the local inline variable is true...
         if( $inline == true ){
@@ -182,12 +182,12 @@ class Read_More_Wp_Public {
             $this->inline = true;
 
             // Change from the opening element from div to span.
-            $break = '<span class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
+            $break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
 
         } else{
 
             // Change from the opening element from span to div div.
-            $break = '<div class="rmwp-toggle" id="rmwp-toggle-'. $rmwp_id .'">';
+            $break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
 
             // Set the class instance variable to false.
             $this->inline = false;

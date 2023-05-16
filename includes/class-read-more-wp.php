@@ -34,7 +34,7 @@ class Read_More_Wp {
 	 * the plugin.
 	 *
 	 * @since    1.0.0
-	 * @access   public
+	 * @access   protected
 	 * @var      Read_More_Wp_Loader    $loader    Maintains and registers all hooks for the plugin.
 	 */
 	protected $loader;

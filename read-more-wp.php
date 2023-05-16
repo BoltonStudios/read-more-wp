@@ -137,16 +137,23 @@ if ( function_exists( 'rmwp_fs' ) ) {
 
             // Load the essential plugin features.
             $plugin = new Read_More_Wp( READ_MORE_WP_BASENAME );
-
-            // This IF block will be auto removed from the Free version.
+            
             if ( rmwp_fs()->is__premium_only() ) {
 
-                // This IF will be executed only if the user in a trial mode or have a valid license.
+                // This IF block will be auto removed from the Free version.
+
+                // The following IF will be executed only if the user in a trial mode or have a valid license.
                 if ( rmwp_fs()->can_use_premium_code() ) {
 
                     // ... premium only logic ...
-                    //wp_enqueue_style( $plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'plus/css/read-more-wp-plus.css', array(), $plugin->get_version(), 'all' );
-                    //$plugin->loader->add_filter();
+                    require_once plugin_dir_path( __FILE__ ) . 'plus/class-read-more-wp-plus.php';
+                    
+                    // Load Premium Features and pass the plugin object to be modified
+                    $plugin_plus = new Read_More_Wp_Plus( $plugin );
+
+                    // Load Premium scripts and styles.
+                    $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_styles' );
+                    $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_scripts' );
                 }
             }
             
