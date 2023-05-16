@@ -50,7 +50,42 @@
 })( jQuery );
 
 // Define the onclick action event for the Read More button.
-function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
+function rmwpToggleElements( textToggle, buttonWrap, buttonToggle, buttonToggleText, moreLabel, lessLabel, ellipsis ){
+
+    // Toggle the text wrapper's "open" class.
+    textToggle.toggleClass( 'open' );
+
+    // Toggle the button's "open" class.
+    buttonToggle.toggleClass( 'open' );
+
+    // If the button text says 'Read More'...
+    if( buttonToggleText == moreLabel ){
+
+        // Change the button text to 'Read Less'.
+        jQuery( buttonToggle ).text( lessLabel )
+
+        // Move button to the end of the toggled text.
+        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
+
+    } else{
+
+        // Otherwise, change the button text to 'Read More'.
+        jQuery( buttonToggle ).text( moreLabel )
+
+        // Move button to the toggled text break point.
+        buttonWrap.insertAfter( ellipsis );
+    }
+
+    // If the textToggle lacks the "animation-none" class (i.e., it is animated)...
+    if( !textToggle.hasClass( 'animation-none' ) ){
+
+        // Fade the button back in.
+        buttonToggle.fadeToggle( 300 );
+    }
+}
+
+// Define the onclick action event for the Read More button.
+function rmwpButtonAction( rmwpID, moreLabel, lessLabel ){
 
     // Define targets.
     var textToggle          = jQuery( '#rmwp-toggle-' + rmwpID );
@@ -59,120 +94,21 @@ function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
     var buttonToggle        = buttonWrap.children( "button" );
     var buttonToggleText    = buttonToggle.text();
 
-    // Get the element, i.e., the review text, associated with the clicked button.
-    jQuery( textToggle ).each( function(){
+     // If the textToggle has the "animation-none" class (i.e., it is not animated)...
+     if( !textToggle.hasClass( 'animation-none' ) ){
 
-        //
-        if( jQuery( this ).hasClass( 'accordion' ) == true ){
-            
-            // Toggle the ellipsis visibility.
-            ellipsis.fadeToggle( 300 );
+        // Toggle the text visibility.
+        jQuery( textToggle ).toggle();
 
-            //
-            buttonToggle.fadeToggle( 300, function() {
-
-                //
-                jQuery( textToggle ).slideToggle( 700, function() {
-                    // Animation complete.
-
-                    // Toggle the text wrapper's "open" class.
-                    jQuery( this ).toggleClass( 'open' );
-            
-                    // Toggle the button's "open" class.
-                    buttonToggle.toggleClass( 'open' );
-
-                    // If the button text says "Continue"...
-                    if( buttonToggleText == moreLabel ){
-
-                        // Change the button text to "Less".
-                        jQuery( buttonToggle ).text( lessLabel )
-
-                        // Move button to the end of the toggled text.
-                        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
-
-                    } else{
-
-                        // Otherwise, change the button text to "More".
-                        jQuery( buttonToggle ).text( moreLabel )
-
-                        // Move button to the toggled text break point.
-                        buttonWrap.insertAfter( ellipsis );
-                    }
-
-                    //
-                    buttonToggle.fadeToggle( 300 );
-                });
-            });
-
-        } else if( jQuery( this ).hasClass( 'fade' ) == true ){
-            
-            // Toggle the ellipsis visibility.
-            ellipsis.fadeToggle( 200 );
-
-            //
-            buttonToggle.fadeToggle( 300, function() {
-
-                //
-                jQuery( textToggle ).fadeToggle( 700, function() {
-                    // Animation complete.
-
-                    // Toggle the text wrapper's "open" class.
-                    jQuery( this ).toggleClass( 'open' );
-            
-                    // Toggle the button's "open" class.
-                    buttonToggle.toggleClass( 'open' );
-
-                    // If the button text says "Continue"...
-                    if( buttonToggleText == moreLabel ){
-
-                        // Change the button text to "Less".
-                        jQuery( buttonToggle ).text( lessLabel )
-
-                        // Move button to the end of the toggled text.
-                        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
-
-                    } else{
-
-                        // Otherwise, change the button text to "More".
-                        jQuery( buttonToggle ).text( moreLabel )
-
-                        // Move button to the toggled text break point.
-                        buttonWrap.insertAfter( ellipsis );
-                    }
-
-                    //
-                    buttonToggle.fadeToggle( 300 );
-                });
-            });
-            
-        } else{
-    
-            // Toggle its visibility.
-            jQuery( textToggle ).toggle();
-
-            // Toggle the text wrapper's "open" class.
-            jQuery( this ).toggleClass( 'open' );
-
-            // Toggle the button's "open" class.
-            buttonToggle.toggleClass( 'open' );
-
-            // If the button text says "Continue"...
-            if( buttonToggleText == moreLabel ){
-
-                // Change the button text to "Less".
-                jQuery( buttonToggle ).text( lessLabel )
-
-                // Move button to the end of the toggled text.
-                buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
-
-            } else{
-
-                // Otherwise, change the button text to "More".
-                jQuery( buttonToggle ).text( moreLabel )
-
-                // Move button to the toggled text break point.
-                buttonWrap.insertAfter( ellipsis );
-            }
-        }
-    });
+        // Toggle the other elements.
+        rmwpToggleElements(
+            textToggle,
+            buttonWrap,
+            buttonToggle,
+            buttonToggleText,
+            moreLabel,
+            lessLabel,
+            ellipsis
+        )
+    }
 }

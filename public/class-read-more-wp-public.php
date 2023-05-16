@@ -150,18 +150,19 @@ class Read_More_Wp_Public {
     function construct_start_read_more( $user_attributes ){
 
         // Initialize variables with default values.
-        $rmwp_id    = rand(); // Generate a random number to identify this read-more toggle.
-        $inline     = false;
-        $break      = '';
-        $classes    = '';
-        $more_label = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
-        $less_label = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
+        $rmwp_id        = rand(); // Generate a random number to identify this read-more toggle.
+        $inline         = false;
+        $toggle_break   = '';
+        $classes        = '';
+        $more_label     = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
+        $less_label     = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
+        $animation      = null;
 
         // Handle attributes.
         if( isset( $user_attributes ) ){
             
             // Set list of supported attributes and their default values.
-            $supported_attributes = array( 'inline' => $inline , 'more' => $more_label, 'less' => $less_label );
+            $supported_attributes = array( 'inline' => $inline , 'more' => $more_label, 'less' => $less_label, 'animation' => $animation );
 
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
@@ -170,9 +171,14 @@ class Read_More_Wp_Public {
             $inline     = htmlspecialchars( esc_attr__( $attributes[ 'inline' ] ), ENT_QUOTES);
             $more_label = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
             $less_label = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
+            $animation  = htmlspecialchars( esc_html__( $attributes[ 'animation' ] ), ENT_QUOTES);
 
         }
-            
+
+        // Initialize more variables using updated attributes.
+        $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
+        $btn_action  = "rmwpButtonAction( $btn_args )";
+
         // This IF block will be auto removed from the Free version.
         if ( rmwp_fs()->is__premium_only() ) {
 
@@ -184,8 +190,17 @@ class Read_More_Wp_Public {
                 // Initialize variables.
                 $plus_options = get_option( 'rmwp_plus_options' );
 
-                //
-                $classes = isset( $plus_options['rmwp_animation'] ) ? $plus_options['rmwp_animation'] : $classes;
+                // If the animation option is set, add the animation attribute to the $classes variable, and prefix it with "animation-".
+                $animation_default_setting = isset( $plus_options['rmwp_animation'] ) ? $plus_options['rmwp_animation'] : '';
+
+                // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
+                $animation = ( $animation ==  null ) ? $animation_default_setting : $animation;
+
+                // Add the animation attribute to the $classes variable, and prefix it with "animation-".
+                $classes .= 'animation-' . $animation;
+
+                // Use the Plus button action.
+                $btn_action  = "rmwpPlusButtonAction( $btn_args )";
             }
         }
 
@@ -198,20 +213,19 @@ class Read_More_Wp_Public {
             $this->inline = true;
 
             // Change from the opening element from div to span.
-            $break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
+            $toggle_break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
 
         } else{
 
             // Change from the opening element from span to div div.
-            $break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
+            $toggle_break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
 
             // Set the class instance variable to false.
             $this->inline = false;
         }
         
         // Construct the output elements.
-        $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
-        $button     = '<button name="read more" type="button" onclick="rmwpToggleReadMore( '. $btn_args .' )">';
+        $button     = '<button name="read more" type="button" onclick="'. $btn_action .'">';
         $button    .= $more_label;
         $button    .='</button>';
         $read_more  = '<span class="rmwp-button-wrap" id="rmwp-button-wrap-'. $rmwp_id .'" style="display: none;">';
@@ -222,7 +236,7 @@ class Read_More_Wp_Public {
         // Assemble the output.
         $output  =  $ellipsis;
         $output .=  $read_more;
-        $output .=  $break;
+        $output .=  $toggle_break;
         
         // Return the output.
         return $output;

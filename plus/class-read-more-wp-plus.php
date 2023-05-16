@@ -154,18 +154,29 @@ if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
 
                 // Construct the form field output.
                 ?>
-                    
+
+                <!--Select Animation-->
                 <select id="<?php echo esc_attr( $args['label_for'] ); ?>"
                         class="rmwp-setting rmwp-animation"
                         name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]">
+
+                    <!--No Animation-->
                     <option value="none" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'none', false ) ) : ( '' ); ?>>
                     <?php esc_html_e( 'None', 'rmwp' ); ?>
                     </option>
+                    <!--Accordion Animation-->
+                    <option value="accordion" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'accordion', false ) ) : ( '' ); ?>>
+                    <?php esc_html_e( 'Accordion', 'rmwp' ); ?>
+                    </option>
+                    <!--Fade Animation-->
                     <option value="fade" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'fade', false ) ) : ( '' ); ?>>
                     <?php esc_html_e( 'Fade', 'rmwp' ); ?>
                     </option>
-                    <option value="accordion" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'accordion', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'Accordion', 'rmwp' ); ?>
+                    <!--Fade Animation-->
+                    <option value="fold" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'fold', false ) ) : ( '' ); ?>>
+                    <?php esc_html_e( 'Fold', 'rmwp' ); ?>
+                    </option>
+
                 </select>
 
                 <?php
