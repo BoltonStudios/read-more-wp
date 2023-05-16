@@ -112,7 +112,7 @@ if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
              * class.
              */
     
-            wp_enqueue_script( $this->base_plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'plus/js/read-more-wp-plus.js', array( 'jquery' ), $this->base_plugin->get_version(), false );
+            wp_enqueue_script( $this->base_plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'js/read-more-wp-plus.js', array( 'jquery' ), $this->base_plugin->get_version(), false );
     
         }
 

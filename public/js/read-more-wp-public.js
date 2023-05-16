@@ -52,9 +52,6 @@
 // Define the onclick action event for the Read More button.
 function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
 
-    console.log( "start...moreLabel is " + moreLabel );
-    console.log( "start...lessLabel is " + lessLabel );
-
     // Define targets.
     var textToggle          = jQuery( '#rmwp-toggle-' + rmwpID );
     var ellipsis            = jQuery( '#ellipsis-' + rmwpID );
@@ -65,38 +62,76 @@ function rmwpToggleReadMore( rmwpID, moreLabel, lessLabel ){
     // Get the element, i.e., the review text, associated with the clicked button.
     jQuery( textToggle ).each( function(){
 
-        // Toggle its visibility.
-        jQuery( this ).toggle();
+        //
+        if( jQuery( this ).hasClass( 'accordion' ) == true ){
+            
+            // Toggle the ellipsis visibility.
+            ellipsis.fadeToggle( 300 );
 
-        // Toggle the ellipsis visibility.
-        ellipsis.toggle();
+            //
+            buttonToggle.fadeToggle( 300, function() {
 
-        // Toggle the text wrapper's "open" class.
-        jQuery( this ).toggleClass( 'open' );
+                //
+                jQuery( textToggle ).slideToggle( 700, function() {
+                    // Animation complete.
 
-        // Toggle the button's "open" class.
-        buttonToggle.toggleClass( 'open' );
+                    // Toggle the text wrapper's "open" class.
+                    jQuery( this ).toggleClass( 'open' );
+            
+                    // Toggle the button's "open" class.
+                    buttonToggle.toggleClass( 'open' );
 
+                    // If the button text says "Continue"...
+                    if( buttonToggleText == moreLabel ){
+
+                        // Change the button text to "Less".
+                        jQuery( buttonToggle ).text( lessLabel )
+
+                        // Move button to the end of the toggled text.
+                        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
+
+                    } else{
+
+                        // Otherwise, change the button text to "More".
+                        jQuery( buttonToggle ).text( moreLabel )
+
+                        // Move button to the toggled text break point.
+                        buttonWrap.insertAfter( ellipsis );
+                    }
+
+                    //
+                    buttonToggle.fadeToggle( 300 );
+                });
+            });
+            
+        } else{
+    
+            // Toggle its visibility.
+            jQuery( textToggle ).toggle();
+
+            // Toggle the text wrapper's "open" class.
+            jQuery( this ).toggleClass( 'open' );
+
+            // Toggle the button's "open" class.
+            buttonToggle.toggleClass( 'open' );
+
+            // If the button text says "Continue"...
+            if( buttonToggleText == moreLabel ){
+
+                // Change the button text to "Less".
+                jQuery( buttonToggle ).text( lessLabel )
+
+                // Move button to the end of the toggled text.
+                buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
+
+            } else{
+
+                // Otherwise, change the button text to "More".
+                jQuery( buttonToggle ).text( moreLabel )
+
+                // Move button to the toggled text break point.
+                buttonWrap.insertAfter( ellipsis );
+            }
+        }
     });
-
-    // If the button text says "Continue"...
-    if( buttonToggleText == moreLabel ){
-
-        // Change the button text to "Less".
-        jQuery( buttonToggle ).text( lessLabel )
-
-        // Move button to the end of the toggled text.
-        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
-
-    } else{
-
-        // Otherwise, change the button text to "More".
-        jQuery( buttonToggle ).text( moreLabel )
-
-        // Move button to the toggled text break point.
-        buttonWrap.insertAfter( ellipsis );
-    }
-
-    console.log( "end...moreLabel is " + moreLabel );
-    console.log( "end...lessLabel is " + lessLabel );
 }

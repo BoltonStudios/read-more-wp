@@ -138,9 +138,8 @@ if ( function_exists( 'rmwp_fs' ) ) {
             // Load the essential plugin features.
             $plugin = new Read_More_Wp( READ_MORE_WP_BASENAME );
             
+            // This IF block will be auto removed from the Free version.
             if ( rmwp_fs()->is__premium_only() ) {
-
-                // This IF block will be auto removed from the Free version.
 
                 // The following IF will be executed only if the user in a trial mode or have a valid license.
                 if ( rmwp_fs()->can_use_premium_code() ) {

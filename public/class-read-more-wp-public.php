@@ -172,6 +172,22 @@ class Read_More_Wp_Public {
             $less_label = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
 
         }
+            
+        // This IF block will be auto removed from the Free version.
+        if ( rmwp_fs()->is__premium_only() ) {
+
+            // The following IF will be executed only if the user in a trial mode or have a valid license.
+            if ( rmwp_fs()->can_use_premium_code() ) {
+
+                // ... premium only logic ...
+
+                // Initialize variables.
+                $plus_options = get_option( 'rmwp_plus_options' );
+
+                //
+                $classes = isset( $plus_options['rmwp_animation'] ) ? $plus_options['rmwp_animation'] : $classes;
+            }
+        }
 
         // If the local inline variable is true...
         if( $inline == true ){
