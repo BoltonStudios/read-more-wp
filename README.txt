@@ -18,6 +18,8 @@ Use *Read More WP* to create excerpts and hide text with an elegant toggle butto
 Truncate your long text by inserting the *[start-read-more]* shortcode were you want to hide words, 
 followed by the *[end-read-more]* shortcode where you want the button to show more.
 
+Use the CSS selector `.rmwp-button-wrap button` to style the button.
+
 View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 
 = Features (Free) =
@@ -59,14 +61,13 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Note that the screenshot is taken from
-the /assets directory or the directory that contains the stable readme.txt (tags or trunk). Screenshots in the /assets
-directory take precedence. For example, `/assets/screenshot-1.png` would win over `/tags/4.3/screenshot-1.png`
-(or jpg, jpeg, gif).
-2. This is the second screen shot
+1. The shortcodes wrapping text in the Gutenberg block editor. Highlights added for visibility.
+2. The plugin settings pages with avalable options.
+3. A block of content partially hidden with the "read more" button toggle.
+4. A block of content revealed with the "read less" button toggle.
 
 == Changelog ==
 
 = 1.0.0 =
-* Date Released: 2023-06-01
+* Date Released: 2023-05-17
 * Initial Release
