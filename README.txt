@@ -22,7 +22,7 @@ View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 
 = Features (Free) =
 * Easy *[start-read-more]* and *[end-read-more]* shortcodes.
-* Support for inline breaks (great truncating short text such as testimonial and review quotes).
+* Support for inline breaks (great for truncating short text such as testimonials and review quotes).
 * WordPress forum support.
 
 = Premium Features (One-Time Payment) =

@@ -76,12 +76,8 @@ function rmwpToggleElements( textToggle, buttonWrap, buttonToggle, buttonToggleT
         buttonWrap.insertAfter( ellipsis );
     }
 
-    // If the textToggle lacks the "animation-none" class (i.e., it is animated)...
-    if( !textToggle.hasClass( 'animation-none' ) ){
-
-        // Fade the button back in.
-        buttonToggle.fadeToggle( 300 );
-    }
+    // Toggle the button visibility.
+    buttonToggle.toggle();
 }
 
 // Define the onclick action event for the Read More button.
@@ -94,21 +90,23 @@ function rmwpButtonAction( rmwpID, moreLabel, lessLabel ){
     var buttonToggle        = buttonWrap.children( "button" );
     var buttonToggleText    = buttonToggle.text();
 
-     // If the textToggle has the "animation-none" class (i.e., it is not animated)...
-     if( !textToggle.hasClass( 'animation-none' ) ){
+    // Toggle the text visibility.
+    jQuery( textToggle ).toggle();
 
-        // Toggle the text visibility.
-        jQuery( textToggle ).toggle();
+    // Toggle the ellipsis visibility.
+    ellipsis.toggle();
 
-        // Toggle the other elements.
-        rmwpToggleElements(
-            textToggle,
-            buttonWrap,
-            buttonToggle,
-            buttonToggleText,
-            moreLabel,
-            lessLabel,
-            ellipsis
-        )
-    }
+    // Toggle the button visibility.
+    buttonToggle.toggle();
+
+    // Toggle the other elements.
+    rmwpToggleElements(
+        textToggle,
+        buttonWrap,
+        buttonToggle,
+        buttonToggleText,
+        moreLabel,
+        lessLabel,
+        ellipsis
+    )
 }
