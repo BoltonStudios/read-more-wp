@@ -184,7 +184,7 @@ class Read_More_Wp_Admin {
                 [start-read-more][end-read-more]
             </p>
             <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
-                Example shortcode with overrides:<br />[start-read-more more="Show More" less="Show Less" inline=false ellipsis=true][end-read-more]
+                Example overrides:<br />[start-read-more more="Show More" less="Show Less" inline=true ellipsis=false][end-read-more]
 
             </p>
             <hr />
@@ -257,6 +257,23 @@ class Read_More_Wp_Admin {
             <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" />
 
             <?php
+        }
+
+        // Show Ellipsis callback
+        function rmwp_ellipsis_toggle_checkbox_field_cb( $args ) {
+            
+            // Get the value of the setting we've registered with register_setting()
+            $options = get_option('rmwp_general_options');
+            
+            $setting = ''; // Hide Ellipsis checkbox
+            if( isset( $options[$args['label_for']] ) ){
+                $setting = $options[$args['label_for']];
+            };
+            ?>
+
+            <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">Show Ellipsis</label>
+            <input name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" type="checkbox" id="<?php echo esc_attr( $args['label_for'] ); ?>" value="1" <?php checked('1', $setting); ?> />
+        <?php
         }
     }
 

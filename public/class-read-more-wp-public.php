@@ -76,7 +76,6 @@ class Read_More_Wp_Public {
 
         // Run the init() function once the activated plugins have loaded.
         add_action( 'plugins_loaded', array( $this, 'init' ) );
-
     }
 
 
@@ -116,7 +115,6 @@ class Read_More_Wp_Public {
 		 */
 
 		wp_enqueue_style( $this->plugin_name. '-public-css', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-public.css', array(), $this->version, 'all' );
-
 	}
 
 	/**
@@ -139,7 +137,6 @@ class Read_More_Wp_Public {
 		 */
 
 		wp_enqueue_script( $this->plugin_name . '-public-js', plugin_dir_url( __FILE__ ) . 'js/read-more-wp-public.js', array( 'jquery' ), $this->version, false );
-
 	}
 
     /**
@@ -152,18 +149,19 @@ class Read_More_Wp_Public {
         // Initialize variables with default values.
         $rmwp_id            = rand(); // Generate a random number to identify this read-more toggle.
         $inline             = false;
-        $toggle_break       = '';
-        $classes            = '';
+        $ellipsis           = isset( $this->get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->get_general_options()['rmwp_ellipsis_toggle'] : 0;
         $more_label         = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
         $less_label         = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
+        $toggle_break       = '';
+        $classes            = '';
         $animation          = null;
         $animation_speed    = null;
-
+        
         // Handle attributes.
         if( isset( $user_attributes ) ){
             
             // Set list of supported attributes and their default values.
-            $supported_attributes = array( 'inline' => $inline , 'more' => $more_label, 'less' => $less_label, 'animation' => $animation, 'speed' => $animation_speed );
+            $supported_attributes = array( 'inline' => $inline , 'ellipsis' => $ellipsis, 'more' => $more_label, 'less' => $less_label, 'animation' => $animation, 'speed' => $animation_speed );
 
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
@@ -172,11 +170,11 @@ class Read_More_Wp_Public {
             $inline             = htmlspecialchars( esc_attr__( $attributes[ 'inline' ] ), ENT_QUOTES);
             $more_label         = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
             $less_label         = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
+            $ellipsis           = htmlspecialchars( esc_attr__( $attributes[ 'ellipsis' ] ), ENT_QUOTES);
             $animation          = htmlspecialchars( esc_html__( $attributes[ 'animation' ] ), ENT_QUOTES);
             $animation_speed    = htmlspecialchars( esc_html__( $attributes[ 'speed' ] ), ENT_QUOTES);
-
         }
-
+        
         // Initialize more variables using updated attributes.
         $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
         $btn_action  = "rmwpButtonAction( $btn_args )";
@@ -215,7 +213,7 @@ class Read_More_Wp_Public {
             }
         }
 
-        // If the local inline variable is true...
+        // If the current inline variable is true...
         if( $inline == true ){
 
             // Set the class instance variable to true.
@@ -235,6 +233,20 @@ class Read_More_Wp_Public {
             $this->inline = false;
         }
         
+        // If the current ellipsis variable is false...
+        if( $ellipsis == false || $ellipsis == 'false' || $ellipsis == 0 || $ellipsis == '0' ){
+
+            // Add styles to hide the ellipsis.
+            // The ellipsis partly serves as the insertion point for the Read More button,
+            // so we do not want to omit it from the DOM; only the rendered HTML.
+            $ellipsis = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'" style="opacity: 0; position: absolute; z-index: -1;">...</span>';
+
+        } else{
+
+            // Construct the default ellipsis HTML.
+            $ellipsis = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'">...</span>';
+        }
+        
         // Construct the output elements.
         $button     = '<button name="read more" type="button" onclick="'. $btn_action .'">';
         $button    .= $more_label;
@@ -242,7 +254,6 @@ class Read_More_Wp_Public {
         $read_more  = '<span class="rmwp-button-wrap" id="rmwp-button-wrap-'. $rmwp_id .'" style="display: none;">';
         $read_more .= $button;
         $read_more .= '</span>';
-        $ellipsis   = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'">...</span>';
 
         // Assemble the output.
         $output  =  $ellipsis;
