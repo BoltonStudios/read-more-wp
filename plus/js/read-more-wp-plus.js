@@ -85,7 +85,7 @@ function rmwpPlusToggleElements( textToggle, buttonWrap, buttonToggle, buttonTog
 }
 
 // Define the onclick action event for the Read More button.
-function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel ){
+function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
 
     // Define targets.
     var textToggle          = jQuery( '#rmwp-toggle-' + rmwpID );
@@ -128,7 +128,7 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel ){
 
             // Toggle the text visibility with the slide animation.
             jQuery( textToggle ).slideToggle( 
-                700, // Speed
+                speed, // Speed
                 rmwpPlusToggleElements(
                     textToggle,
                     buttonWrap,
@@ -153,7 +153,7 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel ){
 
             // Toggle the text visibility with the slide animation.
             jQuery( textToggle ).fadeToggle( 
-                700, // Speed
+                speed, // Speed
                 rmwpPlusToggleElements(
                     textToggle,
                     buttonWrap,
@@ -167,7 +167,7 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel ){
         });   
     } else if( textToggle.hasClass( 'animation-fold' ) == true ){
 
-        // Handle the fade animation.
+        // Handle the fold animation.
 
         // Toggle the ellipsis visibility with the fade animation.
         ellipsis.fadeToggle( 300 );
@@ -175,9 +175,9 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel ){
         // Toggle the button visibility with the fade animation.
         buttonToggle.fadeToggle( 300, function() {
 
-            // Toggle the text visibility with the slide animation.
+            // Toggle the text visibility with the fold animation.
             jQuery( textToggle ).toggle( 
-                700, // Speed
+                speed, // Speed
                 rmwpPlusToggleElements(
                     textToggle,
                     buttonWrap,

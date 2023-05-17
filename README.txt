@@ -25,14 +25,14 @@ View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 * Support for inline breaks (great truncating short text such as testimonial and review quotes).
 * WordPress forum support.
 
-= Premium Features =
+= Premium Features (One-Time Payment) =
 * Animated transitions.
 * Priority email support.
-* [Get the Premium Version](https://www.boltonstudios.com/read-more-wp/).
+* [Get Read More WP Plus](https://www.boltonstudios.com/read-more-wp/).
 
 = Supporting Read More WP =
 
-If you found this free plugin helpful, you can support the developer by upgrading to the Premium Version or making a donation:
+If you found this free plugin helpful, you can support the developer by upgrading to Read More WP Plus or making a donation:
 
 * [Buy me a coffee](http://ko-fi.com/boltonstudios)
 

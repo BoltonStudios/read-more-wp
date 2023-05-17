@@ -129,16 +129,15 @@ if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
                 <p id="<?php echo esc_attr( $args['id'] ); ?>">
                     Please find the default "plus" settings below. You may override the default settings using the shortcode options.
                 </p>
-                <hr />
                 <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
-                    Example shortcode with overrides:<br />[start-read-more animation="fade"][end-read-more]
+                    Example shortcode with overrides:<br />[start-read-more animation="fade" speed="800"][end-read-more]
     
                 </p>
                 <hr />
                 <?php
             }
 
-            // Callback
+            // Callback: Animation
             function rmwp_plus_animation_select_field_cb( $args ) {
                 
                 // Initialize varables.
@@ -146,10 +145,10 @@ if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
                 $options = get_option('rmwp_plus_options'); // Current options.
 
                 // If the value for this option exists in the database...
-                if( isset( $options[$args['label_for']] ) ){
+                if( isset( $options[ $args['label_for'] ] ) ){
 
                     // Assign it to the local $setting variable.
-                    $setting = $options[$args['label_for']];
+                    $setting = $options[ $args['label_for'] ];
                 };
 
                 // Construct the form field output.
@@ -161,24 +160,48 @@ if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
                         name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]">
 
                     <!--No Animation-->
-                    <option value="none" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'none', false ) ) : ( '' ); ?>>
+                    <option value="none" <?php echo isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ); ?>>
                     <?php esc_html_e( 'None', 'rmwp' ); ?>
                     </option>
                     <!--Accordion Animation-->
-                    <option value="accordion" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'accordion', false ) ) : ( '' ); ?>>
+                    <option value="accordion" <?php echo isset( $setting ) ? ( selected( $setting, 'accordion', false ) ) : ( '' ); ?>>
                     <?php esc_html_e( 'Accordion', 'rmwp' ); ?>
                     </option>
                     <!--Fade Animation-->
-                    <option value="fade" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'fade', false ) ) : ( '' ); ?>>
+                    <option value="fade" <?php echo isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ); ?>>
                     <?php esc_html_e( 'Fade', 'rmwp' ); ?>
                     </option>
                     <!--Fade Animation-->
-                    <option value="fold" <?php echo isset( $options[ $args['label_for'] ] ) ? ( selected( $options[ $args['label_for'] ], 'fold', false ) ) : ( '' ); ?>>
+                    <option value="fold" <?php echo isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ); ?>>
                     <?php esc_html_e( 'Fold', 'rmwp' ); ?>
                     </option>
 
                 </select>
 
+                <?php
+            }
+
+            // Callback: Animation Speed
+            function rmwp_plus_animation_speed_number_field_cb( $args ) {
+                
+                // Initialize varables.
+                $setting = 500;
+                $options = get_option('rmwp_plus_options'); // Current options.
+
+                // If the value for this option exists in the database...
+                if( isset( $options[ $args['label_for'] ] ) ){
+
+                    // Assign it to the local $setting variable.
+                    $setting = $options[ $args['label_for'] ];
+                };
+
+                // Construct the form field output.
+                ?>
+
+                <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">Animation Speed</label>
+                <input type="number" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" min="0" max="10000" step="50" required />
+
+                <p>The speed of the animation in milliseconds. Choose a number from 0 to 10000 (10 seconds).</p>
                 <?php
             }
 
@@ -213,6 +236,13 @@ if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
                 'id'        => 'rmwp_animation', // id. Used only internally
                 'title'     => __( 'Animation', 'rmwp_plus' ), // title
                 'callback'  => 'rmwp_plus_animation_select_field_cb', // callback
+                'tab'       => 'rmwp_plus', // page
+                'section'   => 'rmwp_plus_section'
+            );
+            $premium_settings_fields[] = array(
+                'id'        => 'rmwp_animation_speed', // id. Used only internally
+                'title'     => __( 'Animation Speed', 'rmwp_plus' ), // title
+                'callback'  => 'rmwp_plus_animation_speed_number_field_cb', // callback
                 'tab'       => 'rmwp_plus', // page
                 'section'   => 'rmwp_plus_section'
             );
