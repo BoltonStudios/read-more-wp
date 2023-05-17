@@ -65,7 +65,7 @@ function rmwpPlusToggleElements( textToggle, buttonWrap, buttonToggle, buttonTog
         jQuery( buttonToggle ).text( lessLabel )
 
         // Move button to the end of the toggled text.
-        buttonWrap.insertAfter( textToggle.next( '.rmwp-toggle-end' ) );
+        textToggle.next( '.rmwp-toggle-end' ).append( buttonWrap );
 
     } else{
 
