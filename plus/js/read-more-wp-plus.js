@@ -109,9 +109,9 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
      }
 
     // Handle the animations.
-    if( textToggle.hasClass( 'animation-accordion' ) == true || textToggle.hasClass( 'animation-slide' ) == true ){
+    if( textToggle.hasClass( 'animation-slide' ) == true || textToggle.hasClass( 'animation-slide' ) == true ){
 
-        // Handle the accordion animation.
+        // Handle the slide animation.
         
         // Toggle the ellipsis visibility with the fade animation.
         ellipsis.fadeToggle( 300 );

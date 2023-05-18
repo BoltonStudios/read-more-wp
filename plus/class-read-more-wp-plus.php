@@ -161,9 +161,9 @@ class Read_More_Wp_Plus{
                 <option value="none" <?php echo isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ); ?>>
                 <?php esc_html_e( 'None', 'rmwp' ); ?>
                 </option>
-                <!--Accordion Animation-->
-                <option value="accordion" <?php echo isset( $setting ) ? ( selected( $setting, 'accordion', false ) ) : ( '' ); ?>>
-                <?php esc_html_e( 'Accordion', 'rmwp' ); ?>
+                <!--Slide Animation-->
+                <option value="slide" <?php echo isset( $setting ) ? ( selected( $setting, 'slide', false ) ) : ( '' ); ?>>
+                <?php esc_html_e( 'Slide', 'rmwp' ); ?>
                 </option>
                 <!--Fade Animation-->
                 <option value="fade" <?php echo isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ); ?>>
