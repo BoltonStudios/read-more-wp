@@ -16,7 +16,7 @@
  * Plugin Name:       Read More WP
  * Plugin URI:        https://wordpress.org/plugins/read-more-wp/
  * Description:       Create excerpts and hide text with an elegant toggle button to show more.
- * Version:           1.0.0
+ * Version:           1.0.1
  * Author:            Aaron Bolton
  * Author URI:        https://www.boltonstudios.com/read-more-wp/
  * License:           GPL-2.0+
