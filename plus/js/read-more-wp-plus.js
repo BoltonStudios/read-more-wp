@@ -70,7 +70,7 @@ function rmwpPlusToggleElements( textToggle, buttonWrap, buttonToggle, buttonTog
     }
 
     // If the textToggle lacks the "animation-none" class (i.e., it is animated)...
-    if( !textToggle.hasClass( 'animation-none' ) ){
+    if( !textToggle.hasClass( 'animation-none' ) && !textToggle.hasClass( 'animation-' ) ){
         
         // Fade the button back in.
         buttonToggle.fadeToggle();
@@ -88,7 +88,7 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
     var buttonToggleText    = buttonToggle.text();
 
      // If the textToggle has the "animation-none" class (i.e., it is not animated)...
-     if( textToggle.hasClass( 'animation-none' ) ){
+     if( textToggle.hasClass( 'animation-none' ) || textToggle.hasClass( 'animation-' ) ){
 
         // Toggle the text visibility.
         jQuery( textToggle ).toggle();
