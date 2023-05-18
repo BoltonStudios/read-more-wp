@@ -106,9 +106,6 @@ if ( function_exists( 'rmwp_fs' ) ) {
                             'slug' => 'options-general.php',
                         ),
                     ),
-                    // Set the SDK to work in a sandbox mode (for development & testing).
-                    // IMPORTANT: MAKE SURE TO REMOVE SECRET KEY BEFORE DEPLOYMENT.
-                    'secret_key'          => 'sk_rY?z3HJS=Ga<J6[;YgNeQ#vM7vr>X',
                 ) );
             }
     
