@@ -44,7 +44,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
      * Start at version 1.0.0 and use SemVer - https://semver.org
      * Rename this for your plugin and update it as you release new versions.
      */
-    define( 'READ_MORE_WP_VERSION', '1.0.0' );
+    define( 'READ_MORE_WP_VERSION', '1.0.1' );
     define( 'READ_MORE_WP_BASENAME', plugin_basename( __FILE__ ) );
 
     /**
