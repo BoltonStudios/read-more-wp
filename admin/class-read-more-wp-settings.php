@@ -146,7 +146,7 @@ if ( ! class_exists( 'Read_More_Wp_Settings' ) ) {
             //
             $settings[] = array(
                 'id'        => 'rmwp_ellipsis_toggle', // id. Used only internally.
-                'title'     => __( 'Show Ellipsis ("...")' ), // title.
+                'title'     => __( 'Hide Ellipsis ("...")' ), // title.
                 'callback'  => 'rmwp_ellipsis_toggle_checkbox_field_cb', // callback.
                 'tab'       => 'rmwp_general', // page
                 'section'   => 'rmwp_section_for_defaults'

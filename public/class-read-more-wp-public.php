@@ -149,7 +149,8 @@ class Read_More_Wp_Public {
         // Initialize variables with default values.
         $rmwp_id            = rand(); // Generate a random number to identify this read-more toggle.
         $inline             = false;
-        $ellipsis           = isset( $this->get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->get_general_options()['rmwp_ellipsis_toggle'] : 0;
+        $ellipsis           = '...';
+        $hide_ellipsis      = isset( $this->get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->get_general_options()['rmwp_ellipsis_toggle'] : false;
         $more_label         = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
         $less_label         = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
         $toggle_break       = '';
@@ -167,12 +168,19 @@ class Read_More_Wp_Public {
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
             
             // Assign attribute values to the corresponding local variables.
-            $inline             = htmlspecialchars( esc_attr__( $attributes[ 'inline' ] ), ENT_QUOTES);
-            $more_label         = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
-            $less_label         = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
-            $ellipsis           = htmlspecialchars( esc_attr__( $attributes[ 'ellipsis' ] ), ENT_QUOTES);
-            $animation          = htmlspecialchars( esc_html__( $attributes[ 'animation' ] ), ENT_QUOTES);
-            $animation_speed    = htmlspecialchars( esc_html__( $attributes[ 'speed' ] ), ENT_QUOTES);
+            $inline                 = htmlspecialchars( esc_attr__( $attributes[ 'inline' ] ), ENT_QUOTES);
+            $more_label             = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
+            $less_label             = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
+            $animation              = htmlspecialchars( esc_html__( $attributes[ 'animation' ] ), ENT_QUOTES);
+            $animation_speed        = htmlspecialchars( esc_html__( $attributes[ 'speed' ] ), ENT_QUOTES);
+            $user_ellipsis_value    = htmlspecialchars( esc_attr__( $attributes[ 'ellipsis' ] ), ENT_QUOTES);
+
+            // If the user specified ellipsis=false in the shortcode attributes...
+            if( $user_ellipsis_value == false || $user_ellipsis_value == 'false' || $user_ellipsis_value == 'hide' || $user_ellipsis_value == 'off' ){
+
+                // Set the hide_ellipsis flag to true.
+                $hide_ellipsis = true;
+            }
         }
         
         // Initialize more variables using updated attributes.
@@ -233,8 +241,8 @@ class Read_More_Wp_Public {
             $this->inline = false;
         }
         
-        // If the current ellipsis variable is false...
-        if( $ellipsis == false || $ellipsis == 'false' || $ellipsis == 0 || $ellipsis == '0' ){
+        // If the $hide_ellipsis flag is true...
+        if( $hide_ellipsis == true ){
 
             // Add styles to hide the ellipsis.
             // The ellipsis partly serves as the insertion point for the Read More button,

@@ -1,9 +1,9 @@
-=== Plugin Name ===
+=== Read More WP ===
 Contributors: boltonstudios
 Donate link: https://ko-fi.com/boltonstudios
 Tags: read more, show more, word limit, word count, toggle text, excerpt, ellipsis
 Requires at least: 4.0.0
-Tested up to: 6.2
+Tested up to: 6.2.1
 Requires PHP: 5.4
 Stable tag: 1.0.0
 License: GPLv2 or later
