@@ -69,5 +69,5 @@ If you found this free plugin helpful, you can support the developer by upgradin
 == Changelog ==
 
 = 1.0.0 =
-* Date Released: 2023-05-17
+* Date Released: 2023-05-18
 * Initial Release
