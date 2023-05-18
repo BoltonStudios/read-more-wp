@@ -39,126 +39,123 @@ if ( function_exists( 'rmwp_fs' ) ) {
 
 } else {
 
-	if ( ! class_exists( 'Read_More_Wp' ) ) {
+    /**
+     * Currently plugin version.
+     * Start at version 1.0.0 and use SemVer - https://semver.org
+     * Rename this for your plugin and update it as you release new versions.
+     */
+    define( 'READ_MORE_WP_VERSION', '1.0.0' );
+    define( 'READ_MORE_WP_BASENAME', plugin_basename( __FILE__ ) );
 
-        /**
-         * Currently plugin version.
-         * Start at version 1.0.0 and use SemVer - https://semver.org
-         * Rename this for your plugin and update it as you release new versions.
-         */
-        define( 'READ_MORE_WP_VERSION', '1.0.0' );
-        define( 'READ_MORE_WP_BASENAME', plugin_basename( __FILE__ ) );
-
-        /**
-         * The code that runs during plugin activation.
-         * This action is documented in includes/class-read-more-wp-activator.php
-         */
-        function activate_read_more_wp() {
-            require_once plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp-activator.php';
-            Read_More_Wp_Activator::activate();
-        }
-
-        /**
-         * The code that runs during plugin deactivation.
-         * This action is documented in includes/class-read-more-wp-deactivator.php
-         */
-        function deactivate_read_more_wp() {
-            require_once plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp-deactivator.php';
-            Read_More_Wp_Deactivator::deactivate();
-        }
-
-        register_activation_hook( __FILE__, 'activate_read_more_wp' );
-        register_deactivation_hook( __FILE__, 'deactivate_read_more_wp' );
-
-        /**
-         * The core plugin class that is used to define internationalization,
-         * admin-specific hooks, and public-facing site hooks.
-         */
-        require plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp.php';
-        
-        if ( ! function_exists( 'rmwp_fs' ) ) {
-
-            // Create a helper function for easy SDK access.
-            function rmwp_fs() {
-
-                global $rmwp_fs;
-        
-                if ( ! isset( $rmwp_fs ) ) {
-
-                    // Include Freemius SDK.
-                    require_once dirname(__FILE__) . '/freemius/start.php';
-        
-                    $rmwp_fs = fs_dynamic_init( array(
-                        'id'                  => '12677',
-                        'slug'                => 'read-more-wp',
-                        'premium_slug'        => 'read-more-wp-plus',
-                        'type'                => 'plugin',
-                        'public_key'          => 'pk_42b15e73d8e69906aae9a2d9ecfd9',
-                        'is_premium'          => true,
-                        'premium_suffix'      => 'Plus',
-                        // If your plugin is a serviceware, set this option to false.
-                        'has_premium_version' => true,
-                        'has_addons'          => false,
-                        'has_paid_plans'      => true,
-                        'menu'                => array(
-                            'slug'           => 'read-more-wp',
-                            'contact'        => false,
-                            'support'        => false,
-                            'parent'         => array(
-                                'slug' => 'options-general.php',
-                            ),
-                        ),
-                        // Set the SDK to work in a sandbox mode (for development & testing).
-                        // IMPORTANT: MAKE SURE TO REMOVE SECRET KEY BEFORE DEPLOYMENT.
-                        'secret_key'          => 'sk_rY?z3HJS=Ga<J6[;YgNeQ#vM7vr>X',
-                    ) );
-                }
-        
-                return $rmwp_fs;
-            }
-        
-            // Init Freemius.
-            rmwp_fs();
-
-            // Signal that SDK was initiated.
-            do_action( 'rmwp_fs_loaded' );
-        }
-
-        /**
-         * Begins execution of the plugin.
-         *
-         * Since everything within the plugin is registered via hooks,
-         * then kicking off the plugin from this point in the file does
-         * not affect the page life cycle.
-         *
-         * @since    1.0.0
-         */
-        function run_read_more_wp() {
-
-            // Load the essential plugin features.
-            $plugin = new Read_More_Wp( READ_MORE_WP_BASENAME );
-            
-            // This IF block will be auto removed from the Free version.
-            if ( rmwp_fs()->is__premium_only() ) {
-
-                // The following IF will be executed only if the user in a trial mode or have a valid license.
-                if ( rmwp_fs()->can_use_premium_code() ) {
-
-                    // ... premium only logic ...
-                    require_once plugin_dir_path( __FILE__ ) . 'plus/class-read-more-wp-plus.php';
-                    
-                    // Load Premium Features and pass the plugin object to be modified
-                    $plugin_plus = new Read_More_Wp_Plus( $plugin );
-
-                    // Load Premium scripts.
-                    $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_scripts' );
-                }
-            }
-            
-            //
-            $plugin->run();
-
-        }
-        run_read_more_wp();
+    /**
+     * The code that runs during plugin activation.
+     * This action is documented in includes/class-read-more-wp-activator.php
+     */
+    function activate_read_more_wp() {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp-activator.php';
+        Read_More_Wp_Activator::activate();
     }
+
+    /**
+     * The code that runs during plugin deactivation.
+     * This action is documented in includes/class-read-more-wp-deactivator.php
+     */
+    function deactivate_read_more_wp() {
+        require_once plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp-deactivator.php';
+        Read_More_Wp_Deactivator::deactivate();
+    }
+
+    register_activation_hook( __FILE__, 'activate_read_more_wp' );
+    register_deactivation_hook( __FILE__, 'deactivate_read_more_wp' );
+
+    /**
+     * The core plugin class that is used to define internationalization,
+     * admin-specific hooks, and public-facing site hooks.
+     */
+    require plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp.php';
+    
+    if ( ! function_exists( 'rmwp_fs' ) ) {
+
+        // Create a helper function for easy SDK access.
+        function rmwp_fs() {
+
+            global $rmwp_fs;
+    
+            if ( ! isset( $rmwp_fs ) ) {
+
+                // Include Freemius SDK.
+                require_once dirname(__FILE__) . '/freemius/start.php';
+    
+                $rmwp_fs = fs_dynamic_init( array(
+                    'id'                  => '12677',
+                    'slug'                => 'read-more-wp',
+                    'premium_slug'        => 'read-more-wp-plus',
+                    'type'                => 'plugin',
+                    'public_key'          => 'pk_42b15e73d8e69906aae9a2d9ecfd9',
+                    'is_premium'          => true,
+                    'premium_suffix'      => 'Plus',
+                    // If your plugin is a serviceware, set this option to false.
+                    'has_premium_version' => true,
+                    'has_addons'          => false,
+                    'has_paid_plans'      => true,
+                    'menu'                => array(
+                        'slug'           => 'read-more-wp',
+                        'contact'        => false,
+                        'support'        => false,
+                        'parent'         => array(
+                            'slug' => 'options-general.php',
+                        ),
+                    ),
+                    // Set the SDK to work in a sandbox mode (for development & testing).
+                    // IMPORTANT: MAKE SURE TO REMOVE SECRET KEY BEFORE DEPLOYMENT.
+                    'secret_key'          => 'sk_rY?z3HJS=Ga<J6[;YgNeQ#vM7vr>X',
+                ) );
+            }
+    
+            return $rmwp_fs;
+        }
+    
+        // Init Freemius.
+        rmwp_fs();
+
+        // Signal that SDK was initiated.
+        do_action( 'rmwp_fs_loaded' );
+    }
+
+    /**
+     * Begins execution of the plugin.
+     *
+     * Since everything within the plugin is registered via hooks,
+     * then kicking off the plugin from this point in the file does
+     * not affect the page life cycle.
+     *
+     * @since    1.0.0
+     */
+    function run_read_more_wp() {
+
+        // Load the essential plugin features.
+        $plugin = new Read_More_Wp( READ_MORE_WP_BASENAME );
+        
+        // This IF block will be auto removed from the Free version.
+        if ( rmwp_fs()->is__premium_only() ) {
+
+            // The following IF will be executed only if the user in a trial mode or have a valid license.
+            if ( rmwp_fs()->can_use_premium_code() ) {
+
+                // ... premium only logic ...
+                require_once plugin_dir_path( __FILE__ ) . 'plus/class-read-more-wp-plus.php';
+                
+                // Load Premium Features and pass the plugin object to be modified
+                $plugin_plus = new Read_More_Wp_Plus( $plugin );
+
+                // Load Premium scripts.
+                $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_scripts' );
+            }
+        }
+        
+        //
+        $plugin->run();
+
+    }
+    run_read_more_wp();
 }

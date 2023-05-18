@@ -10,344 +10,341 @@
  * @subpackage Read_More_Wp/plus
  */
 
-if ( ! class_exists( 'Read_More_Wp_Plus' ) ) {
+/**
+ * Read_More_Wp_Plus Main Class
+ */
+class Read_More_Wp_Plus{
 
     /**
-     * Read_More_Wp_Plus Main Class
+     *
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      Read_More_Wp    $base_plugin
      */
-    class Read_More_Wp_Plus{
+    private $base_plugin;
+    
+    /**
+     *
+     *
+     * @since    1.0.0
+     * @access   protected
+     * @var      Read_More_Wp_Admin    $base_plugin_admin
+     */
+    private $base_plugin_admin;
+    
+    /**
+     *
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      Read_More_Wp_Settings   $base_plugin_settings
+     */
+    private $base_plugin_settings;
+    
+    /**
+     *
+     *
+     * @since    1.0.0
+     * @access   private
+     * @var      Read_More_Wp_Settings    $plus_settings
+     */
+    private $plus_settings;
 
-        /**
-         *
-         *
-         * @since    1.0.0
-         * @access   private
-         * @var      Read_More_Wp    $base_plugin
-         */
-        private $base_plugin;
+    public function __construct($base_plugin)
+    {
+        $this->base_plugin = $base_plugin;
+        $this->base_plugin_settings = $base_plugin->get_plugin_settings();
+        $this->base_plugin_admin = $base_plugin->get_plugin_admin();
+        $this->plus_settings = $this->add_plus_settings();
+
+        $this->init();
+    }
+    function init(){
         
+        $this->get_base_plugin()->set_plugin_settings(
+            $this->get_plus_settings()
+        );
+    }
+
+    /**
+     * Register the Plus stylesheets for the public-facing side of the site.
+     *
+     * @since    1.0.0
+     */
+    public function enqueue_styles() {
+
         /**
+         * This function is provided for demonstration purposes only.
          *
+         * An instance of this class should be passed to the run() function
+         * defined in Read_More_Wp_Loader as all of the hooks are defined
+         * in that particular class.
          *
-         * @since    1.0.0
-         * @access   protected
-         * @var      Read_More_Wp_Admin    $base_plugin_admin
+         * The Read_More_Wp_Loader will then create the relationship
+         * between the defined hooks and the functions defined in this
+         * class.
          */
-        private $base_plugin_admin;
+        //echo plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css';
+        echo  $this->base_plugin->get_plugin_name();
+        wp_enqueue_style( $this->base_plugin->get_plugin_slug() . 'plus', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css', array(), $this->base_plugin->get_version(), 'all' );
         
+    }
+
+    /**
+     * Register the Plus JavaScript for the public-facing side of the site.
+     *
+     * @since    1.0.0
+     */
+    public function enqueue_scripts() {
+
         /**
+         * This function is provided for demonstration purposes only.
          *
+         * An instance of this class should be passed to the run() function
+         * defined in Read_More_Wp_Loader as all of the hooks are defined
+         * in that particular class.
          *
-         * @since    1.0.0
-         * @access   private
-         * @var      Read_More_Wp_Settings   $base_plugin_settings
+         * The Read_More_Wp_Loader will then create the relationship
+         * between the defined hooks and the functions defined in this
+         * class.
          */
-        private $base_plugin_settings;
+
+        wp_enqueue_script( $this->base_plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'js/read-more-wp-plus.js', array( 'jquery' ), $this->base_plugin->get_version(), false );
+
+    }
+
+    /**
+     *  Add Plus Version Settings
+     */
+    function add_plus_settings(){
         
-        /**
-         *
-         *
-         * @since    1.0.0
-         * @access   private
-         * @var      Read_More_Wp_Settings    $plus_settings
-         */
-        private $plus_settings;
+        // Define Premium Version Callbacks
 
-        public function __construct($base_plugin)
-        {
-            $this->base_plugin = $base_plugin;
-            $this->base_plugin_settings = $base_plugin->get_plugin_settings();
-            $this->base_plugin_admin = $base_plugin->get_plugin_admin();
-            $this->plus_settings = $this->add_plus_settings();
+        // Lender Reviews Section
+        function rmwp_plus_section_cb( $args ) {
+            ?>
+            <p id="<?php echo esc_attr( $args['id'] ); ?>">
+                Please find the default "plus" settings below. You may override the default settings using the shortcode options.
+            </p>
+            <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
+                Example shortcode with overrides:<br />[start-read-more animation="fade" speed="800"][end-read-more]
 
-            $this->init();
+            </p>
+            <hr />
+            <?php
         }
-        function init(){
+
+        // Callback: Animation
+        function rmwp_plus_animation_select_field_cb( $args ) {
             
-            $this->get_base_plugin()->set_plugin_settings(
-                $this->get_plus_settings()
-            );
+            // Initialize varables.
+            $setting = '';
+            $options = get_option('rmwp_plus_options'); // Current options.
+
+            // If the value for this option exists in the database...
+            if( isset( $options[ $args['label_for'] ] ) ){
+
+                // Assign it to the local $setting variable.
+                $setting = $options[ $args['label_for'] ];
+            };
+
+            // Construct the form field output.
+            ?>
+
+            <!--Select Animation-->
+            <select id="<?php echo esc_attr( $args['label_for'] ); ?>"
+                    class="rmwp-setting rmwp-animation"
+                    name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]">
+
+                <!--No Animation-->
+                <option value="none" <?php echo isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ); ?>>
+                <?php esc_html_e( 'None', 'rmwp' ); ?>
+                </option>
+                <!--Accordion Animation-->
+                <option value="accordion" <?php echo isset( $setting ) ? ( selected( $setting, 'accordion', false ) ) : ( '' ); ?>>
+                <?php esc_html_e( 'Accordion', 'rmwp' ); ?>
+                </option>
+                <!--Fade Animation-->
+                <option value="fade" <?php echo isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ); ?>>
+                <?php esc_html_e( 'Fade', 'rmwp' ); ?>
+                </option>
+                <!--Fade Animation-->
+                <option value="fold" <?php echo isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ); ?>>
+                <?php esc_html_e( 'Fold', 'rmwp' ); ?>
+                </option>
+
+            </select>
+
+            <?php
         }
 
-        /**
-         * Register the Plus stylesheets for the public-facing side of the site.
-         *
-         * @since    1.0.0
-         */
-        public function enqueue_styles() {
-    
-            /**
-             * This function is provided for demonstration purposes only.
-             *
-             * An instance of this class should be passed to the run() function
-             * defined in Read_More_Wp_Loader as all of the hooks are defined
-             * in that particular class.
-             *
-             * The Read_More_Wp_Loader will then create the relationship
-             * between the defined hooks and the functions defined in this
-             * class.
-             */
-            //echo plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css';
-            echo  $this->base_plugin->get_plugin_name();
-            wp_enqueue_style( $this->base_plugin->get_plugin_slug() . 'plus', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css', array(), $this->base_plugin->get_version(), 'all' );
+        // Callback: Animation Speed
+        function rmwp_plus_animation_speed_number_field_cb( $args ) {
             
-        }
-    
-        /**
-         * Register the Plus JavaScript for the public-facing side of the site.
-         *
-         * @since    1.0.0
-         */
-        public function enqueue_scripts() {
-    
-            /**
-             * This function is provided for demonstration purposes only.
-             *
-             * An instance of this class should be passed to the run() function
-             * defined in Read_More_Wp_Loader as all of the hooks are defined
-             * in that particular class.
-             *
-             * The Read_More_Wp_Loader will then create the relationship
-             * between the defined hooks and the functions defined in this
-             * class.
-             */
-    
-            wp_enqueue_script( $this->base_plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'js/read-more-wp-plus.js', array( 'jquery' ), $this->base_plugin->get_version(), false );
-    
+            // Initialize varables.
+            $setting = 500;
+            $options = get_option('rmwp_plus_options'); // Current options.
+
+            // If the value for this option exists in the database...
+            if( isset( $options[ $args['label_for'] ] ) ){
+
+                // Assign it to the local $setting variable.
+                $setting = $options[ $args['label_for'] ];
+            };
+
+            // Construct the form field output.
+            ?>
+
+            <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">Animation Speed</label>
+            <input type="number" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" min="0" max="10000" step="50" required />
+
+            <p>The speed of the animation in milliseconds. Choose a number from 0 to 10000 (10 seconds).</p>
+            <?php
         }
 
-        /**
-         *  Add Plus Version Settings
-         */
-        function add_plus_settings(){
-            
-            // Define Premium Version Callbacks
+        // Initialize variables.
+        $settings = $this->get_base_plugin_settings(); // Default Read_More_Wp_Settings object.
+        $premium_settings_tabs = $settings->get_tabs(); // Default tabs.
+        $premium_settings_sections = $settings->get_sections(); // Default sections.
+        $premium_settings_fields = $settings->get_settings(); // Default settings.
 
-            // Lender Reviews Section
-            function rmwp_plus_section_cb( $args ) {
-                ?>
-                <p id="<?php echo esc_attr( $args['id'] ); ?>">
-                    Please find the default "plus" settings below. You may override the default settings using the shortcode options.
-                </p>
-                <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
-                    Example shortcode with overrides:<br />[start-read-more animation="fade" speed="800"][end-read-more]
-    
-                </p>
-                <hr />
-                <?php
-            }
+        // Append plus tabs to the default tabs array.
+        $premium_settings_tabs["plus"] = array(
+            'Plus Options', //display name
+            'rmwp_plus', //option group
+            'rmwp_plus_options' // option name
+        );
 
-            // Callback: Animation
-            function rmwp_plus_animation_select_field_cb( $args ) {
-                
-                // Initialize varables.
-                $setting = '';
-                $options = get_option('rmwp_plus_options'); // Current options.
+        // Update the current instance variable.
+        $settings->set_tabs( $premium_settings_tabs );
 
-                // If the value for this option exists in the database...
-                if( isset( $options[ $args['label_for'] ] ) ){
+        // Append plus sections to the default sections array.
+        $premium_settings_sections[] = array(
+            'id'    => 'rmwp_plus_section', // id
+            'title' => __( 'Plus Options', 'rmwp_plus' ), // title
+            'page'  => 'rmwp_plus' // page
+        );
 
-                    // Assign it to the local $setting variable.
-                    $setting = $options[ $args['label_for'] ];
-                };
+        // Update the current instance variable.
+        $settings->set_sections( $premium_settings_sections );
 
-                // Construct the form field output.
-                ?>
+        // Override settings fields
+        $premium_settings_fields[] = array(
+            'id'        => 'rmwp_animation', // id. Used only internally
+            'title'     => __( 'Animation', 'rmwp_plus' ), // title
+            'callback'  => 'rmwp_plus_animation_select_field_cb', // callback
+            'tab'       => 'rmwp_plus', // page
+            'section'   => 'rmwp_plus_section'
+        );
+        $premium_settings_fields[] = array(
+            'id'        => 'rmwp_animation_speed', // id. Used only internally
+            'title'     => __( 'Animation Speed', 'rmwp_plus' ), // title
+            'callback'  => 'rmwp_plus_animation_speed_number_field_cb', // callback
+            'tab'       => 'rmwp_plus', // page
+            'section'   => 'rmwp_plus_section'
+        );
 
-                <!--Select Animation-->
-                <select id="<?php echo esc_attr( $args['label_for'] ); ?>"
-                        class="rmwp-setting rmwp-animation"
-                        name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]">
+        // Update the current instance variable.
+        $settings->set_settings( $premium_settings_fields );
 
-                    <!--No Animation-->
-                    <option value="none" <?php echo isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'None', 'rmwp' ); ?>
-                    </option>
-                    <!--Accordion Animation-->
-                    <option value="accordion" <?php echo isset( $setting ) ? ( selected( $setting, 'accordion', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'Accordion', 'rmwp' ); ?>
-                    </option>
-                    <!--Fade Animation-->
-                    <option value="fade" <?php echo isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'Fade', 'rmwp' ); ?>
-                    </option>
-                    <!--Fade Animation-->
-                    <option value="fold" <?php echo isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ); ?>>
-                    <?php esc_html_e( 'Fold', 'rmwp' ); ?>
-                    </option>
+        // Return premium settings
+        return $settings;
+    }
 
-                </select>
+    // Getters & Setters
+    /**
+     * Get $base_plugin
+     *
+     * @return  Read_More_Wp
+     */ 
+    public function get_base_plugin()
+    {
+        return $this->base_plugin;
+    }
 
-                <?php
-            }
+    /**
+     * Set $base_plugin
+     *
+     * @param  Read_More_Wp  $base_plugin  $base_plugin
+     *
+     * @return  self
+     */ 
+    public function set_base_plugin(Read_More_Wp $base_plugin)
+    {
+        $this->base_plugin = $base_plugin;
 
-            // Callback: Animation Speed
-            function rmwp_plus_animation_speed_number_field_cb( $args ) {
-                
-                // Initialize varables.
-                $setting = 500;
-                $options = get_option('rmwp_plus_options'); // Current options.
+        return $this;
+    }
+    /**
+     * Get $base_plugin_admin
+     *
+     * @return  Read_More_Wp_Admin
+     */ 
+    public function get_base_plugin_admin()
+    {
+        return $this->base_plugin_admin;
+    }
 
-                // If the value for this option exists in the database...
-                if( isset( $options[ $args['label_for'] ] ) ){
+    /**
+     * Set $base_plugin_admin
+     *
+     * @param  Read_More_Wp_Admin  $base_plugin_admin  $base_plugin_admin
+     *
+     * @return  self
+     */ 
+    public function set_base_plugin_admin(Read_More_Wp_Admin $base_plugin_admin)
+    {
+        $this->base_plugin_admin = $base_plugin_admin;
 
-                    // Assign it to the local $setting variable.
-                    $setting = $options[ $args['label_for'] ];
-                };
+        return $this;
+    }
 
-                // Construct the form field output.
-                ?>
+    /**
+     * Get $base_plugin_settings
+     *
+     * @return  Read_More_Wp_Settings
+     */ 
+    public function get_base_plugin_settings()
+    {
+        return $this->base_plugin_settings;
+    }
 
-                <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">Animation Speed</label>
-                <input type="number" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" min="0" max="10000" step="50" required />
+    /**
+     * Set $base_plugin_settings
+     *
+     * @param  Read_More_Wp_Settings  $base_plugin_settings  $base_plugin_settings
+     *
+     * @return  self
+     */ 
+    public function set_base_plugin_settings(Read_More_Wp_Settings $base_plugin_settings)
+    {
+        $this->base_plugin_settings = $base_plugin_settings;
 
-                <p>The speed of the animation in milliseconds. Choose a number from 0 to 10000 (10 seconds).</p>
-                <?php
-            }
+        return $this;
+    }
 
-            // Initialize variables.
-            $settings = $this->get_base_plugin_settings(); // Default Read_More_Wp_Settings object.
-            $premium_settings_tabs = $settings->get_tabs(); // Default tabs.
-            $premium_settings_sections = $settings->get_sections(); // Default sections.
-            $premium_settings_fields = $settings->get_settings(); // Default settings.
+    /**
+     * Get $plus_settings
+     *
+     * @return  Read_More_Wp_Settings
+     */ 
+    public function get_plus_settings()
+    {
+        return $this->plus_settings;
+    }
 
-            // Append plus tabs to the default tabs array.
-            $premium_settings_tabs["plus"] = array(
-                'Plus Options', //display name
-                'rmwp_plus', //option group
-                'rmwp_plus_options' // option name
-            );
+    /**
+     * Set $plus_settings
+     *
+     * @param  Read_More_Wp_Settings  $plus_settings  $plus_settings
+     *
+     * @return  self
+     */ 
+    public function set_plus_settings(Read_More_Wp_Settings $plus_settings)
+    {
+        $this->plus_settings = $plus_settings;
 
-            // Update the current instance variable.
-            $settings->set_tabs( $premium_settings_tabs );
-
-            // Append plus sections to the default sections array.
-            $premium_settings_sections[] = array(
-                'id'    => 'rmwp_plus_section', // id
-                'title' => __( 'Plus Options', 'rmwp_plus' ), // title
-                'page'  => 'rmwp_plus' // page
-            );
-
-            // Update the current instance variable.
-            $settings->set_sections( $premium_settings_sections );
-
-            // Override settings fields
-            $premium_settings_fields[] = array(
-                'id'        => 'rmwp_animation', // id. Used only internally
-                'title'     => __( 'Animation', 'rmwp_plus' ), // title
-                'callback'  => 'rmwp_plus_animation_select_field_cb', // callback
-                'tab'       => 'rmwp_plus', // page
-                'section'   => 'rmwp_plus_section'
-            );
-            $premium_settings_fields[] = array(
-                'id'        => 'rmwp_animation_speed', // id. Used only internally
-                'title'     => __( 'Animation Speed', 'rmwp_plus' ), // title
-                'callback'  => 'rmwp_plus_animation_speed_number_field_cb', // callback
-                'tab'       => 'rmwp_plus', // page
-                'section'   => 'rmwp_plus_section'
-            );
-
-            // Update the current instance variable.
-            $settings->set_settings( $premium_settings_fields );
-
-            // Return premium settings
-            return $settings;
-        }
-
-        // Getters & Setters
-        /**
-         * Get $base_plugin
-         *
-         * @return  Read_More_Wp
-         */ 
-        public function get_base_plugin()
-        {
-            return $this->base_plugin;
-        }
-
-        /**
-         * Set $base_plugin
-         *
-         * @param  Read_More_Wp  $base_plugin  $base_plugin
-         *
-         * @return  self
-         */ 
-        public function set_base_plugin(Read_More_Wp $base_plugin)
-        {
-            $this->base_plugin = $base_plugin;
-
-            return $this;
-        }
-        /**
-         * Get $base_plugin_admin
-         *
-         * @return  Read_More_Wp_Admin
-         */ 
-        public function get_base_plugin_admin()
-        {
-            return $this->base_plugin_admin;
-        }
-
-        /**
-         * Set $base_plugin_admin
-         *
-         * @param  Read_More_Wp_Admin  $base_plugin_admin  $base_plugin_admin
-         *
-         * @return  self
-         */ 
-        public function set_base_plugin_admin(Read_More_Wp_Admin $base_plugin_admin)
-        {
-            $this->base_plugin_admin = $base_plugin_admin;
-
-            return $this;
-        }
-
-        /**
-         * Get $base_plugin_settings
-         *
-         * @return  Read_More_Wp_Settings
-         */ 
-        public function get_base_plugin_settings()
-        {
-            return $this->base_plugin_settings;
-        }
-
-        /**
-         * Set $base_plugin_settings
-         *
-         * @param  Read_More_Wp_Settings  $base_plugin_settings  $base_plugin_settings
-         *
-         * @return  self
-         */ 
-        public function set_base_plugin_settings(Read_More_Wp_Settings $base_plugin_settings)
-        {
-            $this->base_plugin_settings = $base_plugin_settings;
-
-            return $this;
-        }
-
-        /**
-         * Get $plus_settings
-         *
-         * @return  Read_More_Wp_Settings
-         */ 
-        public function get_plus_settings()
-        {
-            return $this->plus_settings;
-        }
-
-        /**
-         * Set $plus_settings
-         *
-         * @param  Read_More_Wp_Settings  $plus_settings  $plus_settings
-         *
-         * @return  self
-         */ 
-        public function set_plus_settings(Read_More_Wp_Settings $plus_settings)
-        {
-            $this->plus_settings = $plus_settings;
-
-            return $this;
-        }
+        return $this;
     }
 }
