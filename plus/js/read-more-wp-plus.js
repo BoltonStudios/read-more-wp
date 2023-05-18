@@ -38,13 +38,6 @@
             // Display the Read More button.
             $( this ).show();
         });
-
-        // For each review (toggle element).
-        $( ".rmwp-toggle" ).each( function(){
-
-            // Hide the non-excerpt text.
-            $( this ).hide();
-        });
     });
 
 })( jQuery );

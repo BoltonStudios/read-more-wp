@@ -151,8 +151,10 @@ class Read_More_Wp_Public {
         $inline             = false;
         $ellipsis           = '...';
         $hide_ellipsis      = isset( $this->get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->get_general_options()['rmwp_ellipsis_toggle'] : false;
-        $more_label         = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : 'Read More';
-        $less_label         = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : 'Read Less';
+        $default_more_label = 'Read More';
+        $default_less_label = 'Read Less';
+        $more_label         = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : $default_more_label;
+        $less_label         = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : $default_less_label;
         $toggle_break       = '';
         $classes            = '';
         $animation          = null;
@@ -182,6 +184,10 @@ class Read_More_Wp_Public {
                 $hide_ellipsis = true;
             }
         }
+
+        // If the More or Less button labels were set to empty strings, use the defaults.
+        $more_label = ( $more_label == '' ) ? $default_more_label : $more_label;
+        $less_label = ( $less_label == '' ) ? $default_less_label : $less_label;
         
         // Initialize more variables using updated attributes.
         $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
@@ -230,12 +236,12 @@ class Read_More_Wp_Public {
             $this->inline = true;
 
             // Change from the opening element from div to span.
-            $toggle_break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
+            $toggle_break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
 
         } else{
 
             // Change from the opening element from span to div div.
-            $toggle_break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'">';
+            $toggle_break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
 
             // Set the class instance variable to false.
             $this->inline = false;
