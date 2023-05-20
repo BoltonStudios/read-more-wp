@@ -1,0 +1,37 @@
+.animation-popUp{
+    &.open{
+        background-color: #ffffff;
+        width: 90%;
+        height: auto;
+        padding: 2rem 1rem 1rem;
+        box-sizing: border-box;
+        z-index: 900;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        border: 1px solid rgba(0,0,0,.2);
+        border-radius: 0.3rem;
+        box-shadow: 0 0 6px 0px rgba( 0, 0, 0, 0.25 );
+    }
+    .rmwp-button-wrap{
+        position: absolute;
+        top: 5px;
+        right: 10px;
+    }
+}
+.rmwp-animation-popUp-overlay{
+    background-color: rgb( 119, 119, 119 );
+    max-width: 100% !important;
+    width: 100%;
+    height: 100%;
+    margin: 0 0 0 0 !important;
+    opacity: 0.7;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 800;
+    overflow-x: hidden;
+    overflow-y: auto;
+    outline: 0;
+}

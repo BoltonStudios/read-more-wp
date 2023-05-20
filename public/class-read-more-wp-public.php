@@ -164,7 +164,14 @@ class Read_More_Wp_Public {
         if( isset( $user_attributes ) ){
             
             // Set list of supported attributes and their default values.
-            $supported_attributes = array( 'inline' => $inline , 'ellipsis' => $ellipsis, 'more' => $more_label, 'less' => $less_label, 'animation' => $animation, 'speed' => $animation_speed );
+            $supported_attributes = array( 
+                'inline' => $inline ,
+                'ellipsis' => $ellipsis,
+                'more' => $more_label,
+                'less' => $less_label,
+                'animation' => $animation,
+                'speed' => $animation_speed
+            );
 
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
@@ -211,10 +218,13 @@ class Read_More_Wp_Public {
                 $animation_speed_default_setting = isset( $plus_options['rmwp_animation_speed'] ) ? $plus_options['rmwp_animation_speed'] : 500;
 
                 // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
-                $animation = ( $animation ==  null ) ? $animation_default_setting : $animation;
+                $animation = ( $animation == null ) ? $animation_default_setting : $animation;
+
+                // Change the formatting of the pop-up attribute to camelcase.
+                $animation = ( $animation == 'pop-up' || $animation == 'popup' ) ? 'popUp' : $animation;
 
                 // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
-                $animation_speed = ( $animation_speed ==  null ) ? $animation_speed_default_setting : $animation_speed;
+                $animation_speed = ( $animation_speed == null ) ? $animation_speed_default_setting : $animation_speed;
 
                 // Update the button arguments.
                 $btn_args = "'$rmwp_id', '$more_label', '$less_label', $animation_speed";
@@ -224,6 +234,13 @@ class Read_More_Wp_Public {
 
                 // Use the Plus button action.
                 $btn_action  = "rmwpPlusButtonAction( $btn_args )";
+
+                // If the user selected the pop-up animation...
+                if( $animation == 'popUp' ){
+
+                    // Add the overlay element to the HTML.
+                    $toggle_break .= '<div id="rmwp-animation-popUp-overlay-'. $rmwp_id .'" class="rmwp-animation-popUp-overlay" style="display: none"></div>';
+                }
             }
         }
 
@@ -236,12 +253,12 @@ class Read_More_Wp_Public {
             $this->inline = true;
 
             // Change from the opening element from div to span.
-            $toggle_break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
+            $toggle_break .= '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
 
         } else{
 
             // Change from the opening element from span to div div.
-            $toggle_break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
+            $toggle_break .= '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
 
             // Set the class instance variable to false.
             $this->inline = false;

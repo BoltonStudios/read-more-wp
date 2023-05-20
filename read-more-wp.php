@@ -16,7 +16,7 @@
  * Plugin Name:       Read More WP
  * Plugin URI:        https://wordpress.org/plugins/read-more-wp/
  * Description:       Create excerpts and hide text with an elegant toggle button to show more.
- * Version:           1.0.1
+ * Version:           1.1.0
  * Author:            Aaron Bolton
  * Author URI:        https://www.boltonstudios.com/read-more-wp/
  * License:           GPL-2.0+
@@ -44,7 +44,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
      * Start at version 1.0.0 and use SemVer - https://semver.org
      * Rename this for your plugin and update it as you release new versions.
      */
-    define( 'READ_MORE_WP_VERSION', '1.0.1' );
+    define( 'READ_MORE_WP_VERSION', '1.1.0' );
     define( 'READ_MORE_WP_BASENAME', plugin_basename( __FILE__ ) );
 
     /**
@@ -145,8 +145,9 @@ if ( function_exists( 'rmwp_fs' ) ) {
                 // Load Premium Features and pass the plugin object to be modified
                 $plugin_plus = new Read_More_Wp_Plus( $plugin );
 
-                // Load Premium scripts.
+                // Load Premium scripts and styles/
                 $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_scripts' );
+                $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_styles' );
             }
         }
         

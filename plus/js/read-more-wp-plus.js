@@ -57,8 +57,17 @@ function rmwpPlusToggleElements( textToggle, buttonWrap, buttonToggle, buttonTog
         // Change the button text to 'Read Less'.
         jQuery( buttonToggle ).text( lessLabel )
 
-        // Move button to the end of the toggled text.
-        textToggle.next( '.rmwp-toggle-end' ).append( buttonWrap );
+        // If the textToggle is a pop-up...
+        if( textToggle.hasClass( 'animation-popUp' ) ){
+
+            // Add the read-less button within the toggle text element (i.e., the pop-up window).
+            textToggle.prepend( buttonWrap );
+
+        } else{
+
+            // Move button to the end of the toggled text.
+            textToggle.next( '.rmwp-toggle-end' ).append( buttonWrap );
+        }
 
     } else{
 
@@ -87,29 +96,8 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
     var buttonToggle        = buttonWrap.children( "button" );
     var buttonToggleText    = buttonToggle.text();
 
-     // If the textToggle has the "animation-none" class (i.e., it is not animated)...
-     if( textToggle.hasClass( 'animation-none' ) || textToggle.hasClass( 'animation-' ) ){
-
-        // Toggle the text visibility.
-        jQuery( textToggle ).toggle();
-
-        // Toggle the ellipsis visibility with the fade animation.
-        ellipsis.toggle();
-
-        // Toggle the other elements.
-        rmwpPlusToggleElements(
-            textToggle,
-            buttonWrap,
-            buttonToggle,
-            buttonToggleText,
-            moreLabel,
-            lessLabel,
-            ellipsis
-        )
-     }
-
     // Handle the animations.
-    if( textToggle.hasClass( 'animation-slide' ) == true || textToggle.hasClass( 'animation-slide' ) == true ){
+    if( textToggle.hasClass( 'animation-slide' ) == true ){
 
         // Handle the slide animation.
         
@@ -166,7 +154,7 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
         ellipsis.fadeToggle( 300 );
 
         // Toggle the button visibility with the fade animation.
-        buttonToggle.fadeToggle( 300, function() {
+        buttonToggle.fadeToggle( 300, function(){
 
             // Toggle the text visibility with the fold animation.
             jQuery( textToggle ).toggle( 
@@ -182,5 +170,75 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
                 ) // Animation complete.
             );
         });   
+    } else if( textToggle.hasClass( 'animation-popUp' ) == true ){
+
+        // Handle the pop-up animation.
+
+        // Toggle the ellipsis visibility with the fade animation.
+        ellipsis.fadeToggle( 300 );
+
+        // Toggle the button visibility with the fade animation.
+        buttonToggle.fadeToggle( 300, function(){
+
+            // If the toggled text is "open" (expanded)...
+            if( textToggle.hasClass( 'open' ) ){
+
+                // Fade out the pop-up background overlay.
+                jQuery( '#rmwp-animation-popUp-overlay-' + rmwpID ).fadeOut();
+
+                // Toggle the pop-up element off instantly.
+                jQuery( textToggle ).toggle( 
+                    0, // Speed
+                    rmwpPlusToggleElements(
+                        textToggle,
+                        buttonWrap,
+                        buttonToggle,
+                        buttonToggleText,
+                        moreLabel,
+                        lessLabel,
+                        ellipsis
+                    ) // Animation complete.
+                );
+            } else {
+
+                // Fade in the pop-up background overlay.
+                jQuery( '#rmwp-animation-popUp-overlay-' + rmwpID ).fadeIn( speed, function(){
+                    
+                    // Toggle the element with a fade animation at the user-selected speed.
+                    jQuery( textToggle ).fadeIn( 
+                        speed, // Speed
+                        rmwpPlusToggleElements(
+                            textToggle,
+                            buttonWrap,
+                            buttonToggle,
+                            buttonToggleText,
+                            moreLabel,
+                            lessLabel,
+                            ellipsis
+                        ) // Animation complete.
+                    );
+                });
+            }
+        });   
+    } else {
+
+        // If the textToggle is not animated...
+
+        // Toggle the text visibility.
+        jQuery( textToggle ).toggle();
+
+        // Toggle the ellipsis visibility with the fade animation.
+        ellipsis.toggle();
+
+        // Toggle the other elements.
+        rmwpPlusToggleElements(
+            textToggle,
+            buttonWrap,
+            buttonToggle,
+            buttonToggleText,
+            moreLabel,
+            lessLabel,
+            ellipsis
+        )
     }
 }
