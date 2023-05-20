@@ -18,6 +18,33 @@
   top: 5px;
   right: 10px;
 }
+.animation-popUp .alignleft {
+  float: left;
+  margin-inline-start: 0;
+  margin-inline-end: 2em;
+}
+.animation-popUp .aligncenter {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+.animation-popUp .alignright {
+  float: right;
+  margin-inline-start: 2em;
+  margin-inline-end: 0;
+}
+.animation-popUp .alignfull {
+  margin-right: calc(var(--wp--style--root--padding-right) * -1);
+  margin-left: calc(var(--wp--style--root--padding-left) * -1);
+  margin-block-start: 1.5rem;
+  margin-block-end: 0;
+}
+.animation-popUp .alignwide {
+  max-width: var(--wp--style--global--wide-size);
+  margin-left: auto !important;
+  margin-right: auto !important;
+  margin-block-start: 1.5rem;
+  margin-block-end: 0;
+}
 .rmwp-animation-popUp-overlay {
   background-color: #777777;
   max-width: 100% !important;

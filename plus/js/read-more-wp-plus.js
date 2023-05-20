@@ -174,6 +174,8 @@ function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
 
         // Handle the pop-up animation.
 
+        //jQuery( textToggle ).wrap())
+
         // Toggle the ellipsis visibility with the fade animation.
         ellipsis.fadeToggle( 300 );
 
