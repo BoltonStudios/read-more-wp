@@ -1,7 +1,7 @@
 === Read More WP ===
 Contributors: boltonstudios
 Donate link: https://ko-fi.com/boltonstudios
-Tags: read more, show more, word limit, word count, toggle text, excerpt, ellipsis
+Tags: read more, show more, toggle text, ellipsis
 Requires at least: 4.0.0
 Tested up to: 6.2.2
 Requires PHP: 5.4
@@ -13,39 +13,43 @@ Create excerpts and hide text with an elegant toggle button to show more.
 
 == Description ==
 
-Use *Read More WP* to create excerpts and hide text with an elegant toggle button to show more.
+Hide text with an elegant toggle button to show more.
 
-Truncate your long text by inserting the *[start-read-more]* shortcode were you want to hide words, 
-followed by the *[end-read-more]* shortcode where you want the button to show more.
+Insert the *[start-read-more]* shortcode were you want to hide content, 
+followed by *[end-read-more]* to add the toggle button.
 
-Use the CSS selector `.rmwp-button-wrap button` to style the button.
+Target `.rmwp-button-wrap button` to style the button (optional).
 
 View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 
 = Features (Free) =
-* Easy *[start-read-more]* and *[end-read-more]* shortcodes.
-* Support for inline breaks (great for truncating short text such as testimonials and review quotes).
+* Elegantly hide content.
+* Toggle button to show more.
+* Easy Shortcodes.
+* Inline breaks—great for short text such as testimonials.
 * WordPress forum support.
 
-= Premium Features (One-Time Payment) =
+= Premium Features (Paid) =
+*One-Time Payment*
 * Animated transitions.
+* Pop-Ups.
 * Priority email support.
 * [Get Read More WP Plus](https://www.boltonstudios.com/read-more-wp/).
 
 = Supporting Read More WP =
 
-If you found this free plugin helpful, you can support the developer by upgrading to Read More WP Plus or making a donation:
+If you found this free plugin helpful, you can support the developer by upgrading to *Read More WP Plus* or donating to the coffee fund:
 
 * [Buy me a coffee](http://ko-fi.com/boltonstudios)
 
 = Shortcode =
 
-    [start-read-more]
-    [end-read-more]
+`[start-read-more]`
+`[end-read-more]`
 
 = Optional Shortcode Parameters =
 
-    [start-read-more more="Read More" less="Read Less" inline=false ellipsis=true][end-read-more]
+`[start-read-more more="Read More" less="Read Less" inline=false ellipsis=true][end-read-more]`
 
 * more..."Read More" or another button label.
 * less..."Read Less" or another button label.
@@ -71,7 +75,7 @@ If you found this free plugin helpful, you can support the developer by upgradin
 == Changelog ==
 
 = 1.1.0 =
-* Date Released: 2023-06-01
+* Date Released: 2023-05-21
 * New Feature: Animated Pop-Ups.
 
 = 1.0.1 =
@@ -80,4 +84,4 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 = 1.0.0 =
 * Date Released: 2023-05-18
-* Initial Release
+* Initial Release.
