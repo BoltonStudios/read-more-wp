@@ -5,7 +5,7 @@ Tags: read more, show more, word limit, word count, toggle text, excerpt, ellips
 Requires at least: 4.0.0
 Tested up to: 6.2.1
 Requires PHP: 5.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -51,6 +51,8 @@ If you found this free plugin helpful, you can support the developer by upgradin
 * less..."Read Less" or another button label.
 * inline...true or false. Default: false.
 * ellipsis...true or false. Default: true.
+* animation..."none", "slide", "fade", "fold", "pop-up".
+* speed...The speed of the animation in milliseconds. Default: 500.
 
 == Installation ==
 
@@ -67,6 +69,10 @@ If you found this free plugin helpful, you can support the developer by upgradin
 4. A block of content revealed with the "read less" button toggle.
 
 == Changelog ==
+
+= 1.1.0 =
+* Date Released: 2023-06-01
+* New Feature: Animated Pop-Ups.
 
 = 1.0.1 =
 * Date Released: 2023-05-18

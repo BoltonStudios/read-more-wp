@@ -173,6 +173,10 @@ class Read_More_Wp_Plus{
                 <option value="fold" <?php echo isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ); ?>>
                 <?php esc_html_e( 'Fold', 'rmwp' ); ?>
                 </option>
+                <!--Pop-Up Animation-->
+                <option value="popUp" <?php echo isset( $setting ) ? ( selected( $setting, 'popUp', false ) ) : ( '' ); ?>>
+                <?php esc_html_e( 'Pop-Up', 'rmwp' ); ?>
+                </option>
 
             </select>
 

@@ -50,13 +50,22 @@ class Read_More_Wp_Public {
     private $general_options;
 
 	/**
-	 * Description
+	 * A variable to keep track of whether the user selected inline or block element breaks.
 	 *
 	 * @since    1.0.0
 	 * @access   private
-	 * @var      boolean    $inline    Description.
+	 * @var      boolean
 	 */
 	private $inline;
+
+	/**
+	 * A variable to provide an additional closing element for a wrapper if needed.
+	 *
+	 * @since    1.1.0
+	 * @access   private
+	 * @var      string
+	 */
+	private $close_wrapper;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -67,17 +76,18 @@ class Read_More_Wp_Public {
 	 */
 	public function __construct( $plugin_name, $version ) {
 
+        // Initialize instance variables.
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
         $this->inline = false;
+        $this->close_wrapper = "";
 
-        //
+        // Get user settings.
         $this->general_options = get_option( 'rmwp_general_options' );
 
         // Run the init() function once the activated plugins have loaded.
         add_action( 'plugins_loaded', array( $this, 'init' ) );
     }
-
 
     /**
      * Define additional methods.
@@ -159,12 +169,20 @@ class Read_More_Wp_Public {
         $classes            = '';
         $animation          = null;
         $animation_speed    = null;
+        $element_type       = 'div';
         
         // Handle attributes.
         if( isset( $user_attributes ) ){
             
             // Set list of supported attributes and their default values.
-            $supported_attributes = array( 'inline' => $inline , 'ellipsis' => $ellipsis, 'more' => $more_label, 'less' => $less_label, 'animation' => $animation, 'speed' => $animation_speed );
+            $supported_attributes = array( 
+                'inline' => $inline ,
+                'ellipsis' => $ellipsis,
+                'more' => $more_label,
+                'less' => $less_label,
+                'animation' => $animation,
+                'speed' => $animation_speed
+            );
 
             // Combine user attributes with known attributes and fill in defaults when needed.
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
@@ -193,6 +211,14 @@ class Read_More_Wp_Public {
         $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
         $btn_action  = "rmwpButtonAction( $btn_args )";
 
+        // Assign the current inline variable value to the class instance variable.
+        // We want to keep track of the inline value to ensure the closing element matches
+        // the opening element, whether a span or a div.
+        $this->inline = $inline;
+
+        // If the current inline variable is true, change from the opening element from div to span.
+        $element_type = $inline ? 'span' : $element_type;
+
         // This IF block will be auto removed from the Free version.
         if ( rmwp_fs()->is__premium_only() ) {
 
@@ -211,10 +237,13 @@ class Read_More_Wp_Public {
                 $animation_speed_default_setting = isset( $plus_options['rmwp_animation_speed'] ) ? $plus_options['rmwp_animation_speed'] : 500;
 
                 // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
-                $animation = ( $animation ==  null ) ? $animation_default_setting : $animation;
+                $animation = ( $animation == null ) ? $animation_default_setting : $animation;
+
+                // Change the formatting of the pop-up attribute to camelcase.
+                $animation = ( $animation == 'pop-up' || $animation == 'popup' ) ? 'popUp' : $animation;
 
                 // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
-                $animation_speed = ( $animation_speed ==  null ) ? $animation_speed_default_setting : $animation_speed;
+                $animation_speed = ( $animation_speed == null ) ? $animation_speed_default_setting : $animation_speed;
 
                 // Update the button arguments.
                 $btn_args = "'$rmwp_id', '$more_label', '$less_label', $animation_speed";
@@ -224,28 +253,22 @@ class Read_More_Wp_Public {
 
                 // Use the Plus button action.
                 $btn_action  = "rmwpPlusButtonAction( $btn_args )";
+
+                // If the user selected the pop-up animation...
+                if( $animation == 'popUp' ){
+
+                    // Add the overlay element to the HTML.
+                    $toggle_break .= "<$element_type id='rmwp-animation-popUp-overlay-$rmwp_id' class='rmwp-animation-popUp-overlay' style='display: none'>";
+
+                    // Update the class instance close wrapper element string so that we can use it in the [end-read-more] shortcode.
+                    // Used to enclose the background overlay.
+                    $this->close_wrapper = "</$element_type>";
+                }
             }
         }
 
-        // If the current inline variable is true...
-        if( $inline == true ){
-
-            // Set the class instance variable to true.
-            // We want to keep track of the inline value to ensure the closing element matches
-            // the opening element, whether a span or a div.
-            $this->inline = true;
-
-            // Change from the opening element from div to span.
-            $toggle_break = '<span class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
-
-        } else{
-
-            // Change from the opening element from span to div div.
-            $toggle_break = '<div class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
-
-            // Set the class instance variable to false.
-            $this->inline = false;
-        }
+        // Construct the HTML for the element to wrap the hidden, togglable content.
+        $toggle_break .= '<'. $element_type  .' class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
         
         // If the $hide_ellipsis flag is true...
         if( $hide_ellipsis == true ){
@@ -284,19 +307,13 @@ class Read_More_Wp_Public {
 	 * @since    1.0.0
 	 */
     function construct_end_read_more(){
-        
-        // Construct the output.
-        if( $this->inline == true ){
 
-            // Set the closing element as a span.
-            $output = '</span><span class="rmwp-toggle-end"></span>';
+        // If the current inline variable is true, change from the opening element from div to span.
+        $element_type = $this->inline ? 'span' : 'div';
 
-        } else{
+        // Set the closing element.
+        $output = "</$element_type>$this->close_wrapper<$element_type class='rmwp-toggle-end'></$element_type>";
 
-            // Set the closing element as a div.
-            $output = '</div><div class="rmwp-toggle-end"></div>';
-        }
-        
         // Return the output.
         return $output;
     }
