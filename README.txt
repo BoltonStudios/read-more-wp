@@ -30,8 +30,6 @@ View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 * WordPress forum support.
 
 = Premium Features (Paid) =
-*One-Time Payment*
-
 * Animated transitions.
 * Pop-Ups.
 * Priority email support.
