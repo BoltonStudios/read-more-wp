@@ -16,8 +16,10 @@
   background-color: #ffffff;
   max-width: 750px;
   width: 90%;
+  height: auto;
+  overflow: hidden;
   display: block;
-  margin: 1.75rem auto;
+  margin: 55px auto;
   padding: 2rem 2rem 2rem;
   box-sizing: border-box;
   position: relative;

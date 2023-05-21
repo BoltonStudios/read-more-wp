@@ -75,6 +75,10 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 == Changelog ==
 
+= 1.1.1 =
+* Date Released: 2023-05-21
+* Bug fix: Fixed CSS bug that caused content to overflow the pop-up window in some cases.
+
 = 1.1.0 =
 * Date Released: 2023-05-21
 * New Feature: Animated Pop-Ups.
