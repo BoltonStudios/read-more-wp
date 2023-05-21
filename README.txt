@@ -15,7 +15,7 @@ Create excerpts and hide text with an elegant toggle button to show more.
 
 Hide text with an elegant toggle button to show more.
 
-Insert the *[start-read-more]* shortcode were you want to hide content, 
+Insert the *[start-read-more]* shortcode where you want to hide content, 
 followed by *[end-read-more]* to add the toggle button.
 
 Target `.rmwp-button-wrap button` to style the button (optional).
