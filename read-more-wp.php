@@ -40,7 +40,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
 } else {
 
     /**
-     * Currently plugin version.
+     * Current plugin version.
      * Start at version 1.0.0 and use SemVer - https://semver.org
      * Rename this for your plugin and update it as you release new versions.
      */
@@ -145,15 +145,16 @@ if ( function_exists( 'rmwp_fs' ) ) {
                 // Load Premium Features and pass the plugin object to be modified
                 $plugin_plus = new Read_More_Wp_Plus( $plugin );
 
-                // Load Premium scripts and styles/
+                // Load Premium scripts and styles.
                 $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_scripts' );
                 $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_styles' );
             }
         }
         
-        //
+        // Execute all of the plugin hooks with WordPress.
         $plugin->run();
-
     }
+
+    // Start the plugin.
     run_read_more_wp();
 }

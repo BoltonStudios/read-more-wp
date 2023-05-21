@@ -3,7 +3,7 @@ Contributors: boltonstudios
 Donate link: https://ko-fi.com/boltonstudios
 Tags: read more, show more, word limit, word count, toggle text, excerpt, ellipsis
 Requires at least: 4.0.0
-Tested up to: 6.2.1
+Tested up to: 6.2.2
 Requires PHP: 5.4
 Stable tag: 1.1.0
 License: GPLv2 or later
