@@ -31,6 +31,7 @@ View the [Demo](https://www.boltonstudios.com/read-more-wp/).
 
 = Premium Features (Paid) =
 *One-Time Payment*
+
 * Animated transitions.
 * Pop-Ups.
 * Priority email support.
