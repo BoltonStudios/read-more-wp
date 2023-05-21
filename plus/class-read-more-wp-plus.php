@@ -85,8 +85,7 @@ class Read_More_Wp_Plus{
          * between the defined hooks and the functions defined in this
          * class.
          */
-        //echo plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css';
-        echo  $this->base_plugin->get_plugin_name();
+        
         wp_enqueue_style( $this->base_plugin->get_plugin_slug() . 'plus', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css', array(), $this->base_plugin->get_version(), 'all' );
         
     }

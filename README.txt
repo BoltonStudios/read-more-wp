@@ -5,7 +5,7 @@ Tags: read more, show more, toggle text, ellipsis
 Requires at least: 4.0.0
 Tested up to: 6.2.2
 Requires PHP: 5.4
-Stable tag: 1.1.0
+Stable tag: 1.1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ If you found this free plugin helpful, you can support the developer by upgradin
 4. A block of content revealed with the "read less" button toggle.
 
 == Changelog ==
+
+= 1.1.2 =
+* Date Released: 2023-05-21
+* Bug fix: Fixed bug in Plus version that caused plugin name to echo arbitrarily.
 
 = 1.1.1 =
 * Date Released: 2023-05-21
