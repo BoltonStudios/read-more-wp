@@ -312,7 +312,7 @@ class Read_More_Wp_Public {
         $element_type = $this->inline ? 'span' : 'div';
 
         // Set the closing element.
-        $output = "</$element_type>$this->close_wrapper<$element_type class='rmwp-toggle-end'></span>";
+        $output = "</$element_type>$this->close_wrapper<$element_type class='rmwp-toggle-end'></$element_type>";
 
         // Return the output.
         return $output;
