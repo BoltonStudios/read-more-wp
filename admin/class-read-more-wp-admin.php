@@ -80,7 +80,7 @@ class Read_More_Wp_Admin {
         $this->plugin_slug = $plugin_slug;
         $this->version = $version;
         $this->settings = $settings;
-        $this->tabs = $settings->get_tabs();
+        $this->tabs = $settings->rmwp_get_tabs();
 
 	}
 
@@ -90,7 +90,7 @@ class Read_More_Wp_Admin {
      *
      * @since    1.0.0
      */
-    public function add_options_page(){
+    public function rmwp_add_options_page(){
         
         // Add a new Sub-menu to WordPress Administration.
         add_submenu_page(
@@ -99,7 +99,7 @@ class Read_More_Wp_Admin {
             $this->plugin_name, // string $menu_title
             'manage_options', // string $capability
             $this->plugin_slug, // string $menu_slug
-            array( $this, 'render_settings_page' ) // callable $function = ''
+            array( $this, 'rmwp_render_settings_page' ) // callable $function = ''
         );
     }
 
@@ -108,7 +108,7 @@ class Read_More_Wp_Admin {
      *
      * @since    1.1.0
      */
-    public function admin_plugin_listing_actions( $links ) {
+    public function rmwp_admin_plugin_listing_actions( $links ) {
         
         $action_links = [];
         $action_links = array(
@@ -122,7 +122,7 @@ class Read_More_Wp_Admin {
      *
      * @since    1.1.0
      */
-    public function init_settings(){
+    public function rmwp_init_settings(){
 
         // Register sections in the settings page
         register_setting(
@@ -138,7 +138,7 @@ class Read_More_Wp_Admin {
             );
         }
         // Sections
-        foreach($this->settings->get_sections() as $section){
+        foreach($this->settings->rmwp_get_sections() as $section){
             add_settings_section(
                 $section['id'], // id
                 $section['title'], // title
@@ -147,7 +147,7 @@ class Read_More_Wp_Admin {
             );
         }
         // Fields
-        foreach($this->settings->get_settings() as $setting){
+        foreach($this->settings->rmwp_get_settings() as $setting){
             add_settings_field(
                 $setting['id'],
                 $setting['title'],
@@ -210,7 +210,7 @@ class Read_More_Wp_Admin {
             </p>
             <p>
                 <strong style="font-size: 14px">Debugging Information</strong><br/>
-                Your PHP version is <?php echo PHP_VERSION; ?>.
+                Your PHP version is <?php echo esc_html( PHP_VERSION ); ?>.
             </p>
             <hr />
             <?php
@@ -236,7 +236,7 @@ class Read_More_Wp_Admin {
             ?>
 
             <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">"Read More" Button Label</label>
-            <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" />
+            <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo esc_attr( $setting ); ?>" />
 
             <?php
         }
@@ -254,7 +254,7 @@ class Read_More_Wp_Admin {
             ?>
 
             <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">"Read Less" Button Label</label>
-            <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" />
+            <input type="text" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo esc_attr( $setting ) ?>" />
 
             <?php
         }
@@ -272,7 +272,7 @@ class Read_More_Wp_Admin {
             ?>
 
             <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">Show Ellipsis</label>
-            <input name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" type="checkbox" id="<?php echo esc_attr( $args['label_for'] ); ?>" value="1" <?php checked('1', $setting); ?> />
+            <input name="rmwp_general_options[<?php echo esc_attr( $args['label_for'] ); ?>]" type="checkbox" id="<?php echo esc_attr( $args['label_for'] ); ?>" value="1" <?php esc_attr( checked('1', $setting) ); ?> />
         <?php
         }
     }
@@ -282,7 +282,7 @@ class Read_More_Wp_Admin {
      *
      * @since    1.1.0
      */
-    public function render_settings_page() {
+    public function rmwp_render_settings_page() {
         require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/partials/read-more-wp-admin-display.php';
     }
 
@@ -291,7 +291,7 @@ class Read_More_Wp_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function rmwp_enqueue_styles() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -314,7 +314,7 @@ class Read_More_Wp_Admin {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function rmwp_enqueue_scripts() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -331,5 +331,4 @@ class Read_More_Wp_Admin {
 		wp_enqueue_script( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'js/read-more-wp-admin.js', array( 'jquery' ), $this->version, false );
 
 	}
-
 }

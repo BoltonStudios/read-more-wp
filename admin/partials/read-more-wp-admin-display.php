@@ -12,7 +12,7 @@
  * @subpackage Read_More_Wp/admin/partials
  */
 
-$tabs = $this->settings->get_tabs();
+$tabs = $this->settings->rmwp_get_tabs();
 ?>
 
 <!-- This file should primarily consist of HTML with a little bit of PHP. -->
@@ -37,7 +37,7 @@ $tabs = $this->settings->get_tabs();
             $option_group = $tab[1];
             $option_name = $tab[2];
             $active_tab_class = ($active_tab == $option_group) ? 'nav-tab-active' : '';
-            echo '<a href="?page=read-more-wp&tab='. $option_group .'" id="rmwp-nav-tab-'. $i .'" class="nav-tab '. $active_tab_class .'">'. $option_display_name .'</a>';
+            echo '<a href="?page=read-more-wp&tab='. esc_attr( $option_group ) .'" id="rmwp-nav-tab-'. esc_attr( $i ) .'" class="nav-tab '. esc_attr( $active_tab_class ) .'">'. esc_attr( $option_display_name ) .'</a>';
             $i++;
         }
     ?>
@@ -46,8 +46,8 @@ $tabs = $this->settings->get_tabs();
     <?php
     
         // Output settings
-        settings_fields(  $active_tab );
-        do_settings_sections(  $active_tab );
+        settings_fields( esc_attr( $active_tab ) );
+        do_settings_sections( esc_attr( $active_tab ) );
 
         // Output save settings button
         submit_button( 'Save Settings' );

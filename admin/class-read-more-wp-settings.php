@@ -72,16 +72,16 @@ class Read_More_Wp_Settings {
         $this->plugin_name = $plugin_name;
         $this->plugin_slug = $plugin_slug;
         $this->version = $version;
-        $this->tabs = $this->create_tabs();
-        $this->sections = $this->create_sections();
-        $this->settings = $this->create_settings();
+        $this->tabs = $this->rmwp_create_tabs();
+        $this->sections = $this->rmwp_create_sections();
+        $this->settings = $this->rmwp_create_settings();
     }
     
     /**
      * Create the tabs.
      * @return array
      */
-    public function create_tabs() {
+    public function rmwp_create_tabs() {
 
         $tabs[] = array(
             'General', //display name
@@ -100,7 +100,7 @@ class Read_More_Wp_Settings {
      * Create the sections for the Read More WP Settings page.
      * @return array
      */
-    public function create_sections() {
+    public function rmwp_create_sections() {
 
         // General
         $sections[] = array(
@@ -121,7 +121,7 @@ class Read_More_Wp_Settings {
      * Create the settings for Read More WP
      * @return array
      */
-    public function create_settings() {
+    public function rmwp_create_settings() {
 
         //
         $settings[] = array(
@@ -159,7 +159,7 @@ class Read_More_Wp_Settings {
      *
      * @return  self
      */ 
-    public function set_tabs($tabs)
+    public function rmwp_set_tabs($tabs)
     {
         $this->tabs = $tabs;
 
@@ -169,7 +169,7 @@ class Read_More_Wp_Settings {
     /**
      * Get the value of tabs
      */ 
-    public function get_tabs()
+    public function rmwp_get_tabs()
     {
         return $this->tabs;
     }
@@ -177,7 +177,7 @@ class Read_More_Wp_Settings {
     /**
      * Get the value of settings
      */ 
-    public function get_settings()
+    public function rmwp_get_settings()
     {
         return $this->settings;
     }
@@ -187,7 +187,7 @@ class Read_More_Wp_Settings {
      *
      * @return  self
      */ 
-    public function set_settings(array $settings)
+    public function rmwp_set_settings(array $settings)
     {
         $this->settings = $settings;
 
@@ -199,7 +199,7 @@ class Read_More_Wp_Settings {
      *
      * @return  array
      */ 
-    public function get_sections()
+    public function rmwp_get_sections()
     {
         return $this->sections;
     }
@@ -211,7 +211,7 @@ class Read_More_Wp_Settings {
      *
      * @return  self
      */ 
-    public function set_sections(array $sections)
+    public function rmwp_set_sections(array $sections)
     {
         $this->sections = $sections;
 

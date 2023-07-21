@@ -86,7 +86,7 @@ class Read_More_Wp_Public {
         $this->general_options = get_option( 'rmwp_general_options' );
 
         // Run the init() function once the activated plugins have loaded.
-        add_action( 'plugins_loaded', array( $this, 'init' ) );
+        add_action( 'plugins_loaded', array( $this, 'rmwp_init' ) );
     }
 
     /**
@@ -96,13 +96,13 @@ class Read_More_Wp_Public {
 	 */
 
     // Define a helper function to initialize the class object.
-    function init(){
+    function rmwp_init(){
         
         // Add a new shortcode with the 'start-read-more' tag using the 'construct_start_read_more' callback function.
-        add_shortcode( 'start-read-more', array( $this, 'construct_start_read_more' ) );
+        add_shortcode( 'start-read-more', array( $this, 'rmwp_construct_start_read_more' ) );
     
         // Add a new shortcode with the 'end-read-more' tag using the 'construct_end_read_more' callback function.
-        add_shortcode( 'end-read-more', array( $this, 'construct_end_read_more' ) );
+        add_shortcode( 'end-read-more', array( $this, 'rmwp_construct_end_read_more' ) );
     }
 
 	/**
@@ -110,7 +110,7 @@ class Read_More_Wp_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_styles() {
+	public function rmwp_enqueue_styles() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -132,7 +132,7 @@ class Read_More_Wp_Public {
 	 *
 	 * @since    1.0.0
 	 */
-	public function enqueue_scripts() {
+	public function rmwp_enqueue_scripts() {
 
 		/**
 		 * This function is provided for demonstration purposes only.
@@ -154,17 +154,17 @@ class Read_More_Wp_Public {
 	 *
 	 * @since    1.0.0
 	 */
-    function construct_start_read_more( $user_attributes ){
+    function rmwp_construct_start_read_more( $user_attributes ){
 
         // Initialize variables with default values.
         $rmwp_id            = rand(); // Generate a random number to identify this read-more toggle.
         $inline             = false;
         $ellipsis           = '...';
-        $hide_ellipsis      = isset( $this->get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->get_general_options()['rmwp_ellipsis_toggle'] : false;
+        $hide_ellipsis      = isset( $this->rmwp_get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->rmwp_get_general_options()['rmwp_ellipsis_toggle'] : false;
         $default_more_label = 'Read More';
         $default_less_label = 'Read Less';
-        $more_label         = isset( $this->get_general_options()['rmwp_more_button_label'] ) ? $this->get_general_options()['rmwp_more_button_label'] : $default_more_label;
-        $less_label         = isset( $this->get_general_options()['rmwp_less_button_label'] ) ? $this->get_general_options()['rmwp_less_button_label'] : $default_less_label;
+        $more_label         = isset( $this->rmwp_get_general_options()['rmwp_more_button_label'] ) ? $this->rmwp_get_general_options()['rmwp_more_button_label'] : $default_more_label;
+        $less_label         = isset( $this->rmwp_get_general_options()['rmwp_less_button_label'] ) ? $this->rmwp_get_general_options()['rmwp_less_button_label'] : $default_less_label;
         $toggle_break       = '';
         $classes            = '';
         $animation          = null;
@@ -306,7 +306,7 @@ class Read_More_Wp_Public {
 	 *
 	 * @since    1.0.0
 	 */
-    function construct_end_read_more(){
+    function rmwp_construct_end_read_more(){
 
         // If the current inline variable is true, change from the opening element from div to span.
         $element_type = $this->inline ? 'span' : 'div';
@@ -323,7 +323,7 @@ class Read_More_Wp_Public {
      *
      * @since    1.0.0
      */
-    public function get_general_options(){
+    public function rmwp_get_general_options(){
 
         return $this->general_options;
     }

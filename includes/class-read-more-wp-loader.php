@@ -1,21 +1,14 @@
 <?php
 
 /**
- * Register all actions and filters for the plugin
- *
- * @link       https://www.boltonstudios.com/read-more-wp/
- * @since      1.0.0
- *
- * @package    Read_More_Wp
- * @subpackage Read_More_Wp/includes
- */
-
-/**
  * Register all actions and filters for the plugin.
  *
  * Maintain a list of all hooks that are registered throughout
  * the plugin, and register them with the WordPress API. Call the
  * run function to execute the list of actions and filters.
+ * 
+ * @link       https://www.boltonstudios.com/read-more-wp/
+ * @since      1.0.0
  *
  * @package    Read_More_Wp
  * @subpackage Read_More_Wp/includes
@@ -63,8 +56,8 @@ class Read_More_Wp_Loader {
 	 * @param    int                  $priority         Optional. The priority at which the function should be fired. Default is 10.
 	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1.
 	 */
-	public function add_action( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
-		$this->actions = $this->add( $this->actions, $hook, $component, $callback, $priority, $accepted_args );
+	public function rmwp_add_action( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
+		$this->actions = $this->rmwp_add( $this->actions, $hook, $component, $callback, $priority, $accepted_args );
 	}
 
 	/**
@@ -77,8 +70,8 @@ class Read_More_Wp_Loader {
 	 * @param    int                  $priority         Optional. The priority at which the function should be fired. Default is 10.
 	 * @param    int                  $accepted_args    Optional. The number of arguments that should be passed to the $callback. Default is 1
 	 */
-	public function add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
-		$this->filters = $this->add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
+	public function rmwp_add_filter( $hook, $component, $callback, $priority = 10, $accepted_args = 1 ) {
+		$this->filters = $this->rmwp_add( $this->filters, $hook, $component, $callback, $priority, $accepted_args );
 	}
 
 	/**
@@ -95,7 +88,7 @@ class Read_More_Wp_Loader {
 	 * @param    int                  $accepted_args    The number of arguments that should be passed to the $callback.
 	 * @return   array                                  The collection of actions and filters registered with WordPress.
 	 */
-	private function add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
+	private function rmwp_add( $hooks, $hook, $component, $callback, $priority, $accepted_args ) {
 
 		$hooks[] = array(
 			'hook'          => $hook,
@@ -114,7 +107,7 @@ class Read_More_Wp_Loader {
 	 *
 	 * @since    1.0.0
 	 */
-	public function run() {
+	public function rmwp_run() {
 
 		foreach ( $this->filters as $hook ) {
 			add_filter( $hook['hook'], array( $hook['component'], $hook['callback'] ), $hook['priority'], $hook['accepted_args'] );

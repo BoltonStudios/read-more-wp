@@ -54,16 +54,16 @@ class Read_More_Wp_Plus{
     public function __construct($base_plugin)
     {
         $this->base_plugin = $base_plugin;
-        $this->base_plugin_settings = $base_plugin->get_plugin_settings();
-        $this->base_plugin_admin = $base_plugin->get_plugin_admin();
-        $this->plus_settings = $this->add_plus_settings();
+        $this->base_plugin_settings = $base_plugin->rmwp_get_plugin_settings();
+        $this->base_plugin_admin = $base_plugin->rmwp_get_plugin_admin();
+        $this->plus_settings = $this->rmwp_add_plus_settings();
 
-        $this->init();
+        $this->rmwp_init();
     }
-    function init(){
+    function rmwp_init(){
         
-        $this->get_base_plugin()->set_plugin_settings(
-            $this->get_plus_settings()
+        $this->rmwp_get_base_plugin()->rmwp_set_plugin_settings(
+            $this->rmwp_get_plus_settings()
         );
     }
 
@@ -72,7 +72,7 @@ class Read_More_Wp_Plus{
      *
      * @since    1.0.0
      */
-    public function enqueue_styles() {
+    public function rmwp_enqueue_styles() {
 
         /**
          * This function is provided for demonstration purposes only.
@@ -86,7 +86,7 @@ class Read_More_Wp_Plus{
          * class.
          */
         
-        wp_enqueue_style( $this->base_plugin->get_plugin_slug() . 'plus', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css', array(), $this->base_plugin->get_version(), 'all' );
+        wp_enqueue_style( $this->base_plugin->rmwp_get_plugin_slug() . 'plus', plugin_dir_url( __FILE__ ) . 'css/read-more-wp-plus.css', array(), $this->base_plugin->rmwp_get_version(), 'all' );
         
     }
 
@@ -95,7 +95,7 @@ class Read_More_Wp_Plus{
      *
      * @since    1.0.0
      */
-    public function enqueue_scripts() {
+    public function rmwp_enqueue_scripts() {
 
         /**
          * This function is provided for demonstration purposes only.
@@ -109,14 +109,14 @@ class Read_More_Wp_Plus{
          * class.
          */
 
-        wp_enqueue_script( $this->base_plugin->get_plugin_name(), plugin_dir_url( __FILE__ ) . 'js/read-more-wp-plus.js', array( 'jquery' ), $this->base_plugin->get_version(), false );
+        wp_enqueue_script( $this->base_plugin->rmwp_get_plugin_name(), plugin_dir_url( __FILE__ ) . 'js/read-more-wp-plus.js', array( 'jquery' ), $this->base_plugin->rmwp_get_version(), false );
 
     }
 
     /**
      *  Add Plus Version Settings
      */
-    function add_plus_settings(){
+    function rmwp_add_plus_settings(){
         
         // Define Premium Version Callbacks
 
@@ -157,23 +157,23 @@ class Read_More_Wp_Plus{
                     name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]">
 
                 <!--No Animation-->
-                <option value="none" <?php echo isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ); ?>>
+                <option value="none" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ) ); ?>>
                 <?php esc_html_e( 'None', 'rmwp' ); ?>
                 </option>
                 <!--Slide Animation-->
-                <option value="slide" <?php echo isset( $setting ) ? ( selected( $setting, 'slide', false ) ) : ( '' ); ?>>
+                <option value="slide" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'slide', false ) ) : ( '' ) ); ?>>
                 <?php esc_html_e( 'Slide', 'rmwp' ); ?>
                 </option>
                 <!--Fade Animation-->
-                <option value="fade" <?php echo isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ); ?>>
+                <option value="fade" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ) ); ?>>
                 <?php esc_html_e( 'Fade', 'rmwp' ); ?>
                 </option>
                 <!--Fade Animation-->
-                <option value="fold" <?php echo isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ); ?>>
+                <option value="fold" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ) ); ?>>
                 <?php esc_html_e( 'Fold', 'rmwp' ); ?>
                 </option>
                 <!--Pop-Up Animation-->
-                <option value="popUp" <?php echo isset( $setting ) ? ( selected( $setting, 'popUp', false ) ) : ( '' ); ?>>
+                <option value="popUp" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'popUp', false ) ) : ( '' ) ); ?>>
                 <?php esc_html_e( 'Pop-Up', 'rmwp' ); ?>
                 </option>
 
@@ -200,17 +200,17 @@ class Read_More_Wp_Plus{
             ?>
 
             <label for="<?php echo esc_attr( $args['label_for'] ); ?>" class="screen-reader-text">Animation Speed</label>
-            <input type="number" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo $setting ?>" min="0" max="10000" step="50" required />
+            <input type="number" id="<?php echo esc_attr( $args['label_for'] ); ?>" class="rmwp-setting" name="rmwp_plus_options[<?php echo esc_attr( $args['label_for'] ); ?>]" value="<?php echo esc_attr( $setting ) ?>" min="0" max="10000" step="50" required />
 
             <p>The speed of the animation in milliseconds. Choose a number from 0 to 10000 (10 seconds).</p>
             <?php
         }
 
         // Initialize variables.
-        $settings = $this->get_base_plugin_settings(); // Default Read_More_Wp_Settings object.
-        $premium_settings_tabs = $settings->get_tabs(); // Default tabs.
-        $premium_settings_sections = $settings->get_sections(); // Default sections.
-        $premium_settings_fields = $settings->get_settings(); // Default settings.
+        $settings = $this->rmwp_get_base_plugin_settings(); // Default Read_More_Wp_Settings object.
+        $premium_settings_tabs = $settings->rmwp_get_tabs(); // Default tabs.
+        $premium_settings_sections = $settings->rmwp_get_sections(); // Default sections.
+        $premium_settings_fields = $settings->rmwp_get_settings(); // Default settings.
 
         // Append plus tabs to the default tabs array.
         $premium_settings_tabs["plus"] = array(
@@ -220,7 +220,7 @@ class Read_More_Wp_Plus{
         );
 
         // Update the current instance variable.
-        $settings->set_tabs( $premium_settings_tabs );
+        $settings->rmwp_set_tabs( $premium_settings_tabs );
 
         // Append plus sections to the default sections array.
         $premium_settings_sections[] = array(
@@ -230,7 +230,7 @@ class Read_More_Wp_Plus{
         );
 
         // Update the current instance variable.
-        $settings->set_sections( $premium_settings_sections );
+        $settings->rmwp_set_sections( $premium_settings_sections );
 
         // Override settings fields
         $premium_settings_fields[] = array(
@@ -249,7 +249,7 @@ class Read_More_Wp_Plus{
         );
 
         // Update the current instance variable.
-        $settings->set_settings( $premium_settings_fields );
+        $settings->rmwp_set_settings( $premium_settings_fields );
 
         // Return premium settings
         return $settings;
@@ -261,7 +261,7 @@ class Read_More_Wp_Plus{
      *
      * @return  Read_More_Wp
      */ 
-    public function get_base_plugin()
+    public function rmwp_get_base_plugin()
     {
         return $this->base_plugin;
     }
@@ -273,7 +273,7 @@ class Read_More_Wp_Plus{
      *
      * @return  self
      */ 
-    public function set_base_plugin(Read_More_Wp $base_plugin)
+    public function rmwp_set_base_plugin(Read_More_Wp $base_plugin)
     {
         $this->base_plugin = $base_plugin;
 
@@ -284,7 +284,7 @@ class Read_More_Wp_Plus{
      *
      * @return  Read_More_Wp_Admin
      */ 
-    public function get_base_plugin_admin()
+    public function rmwp_get_base_plugin_admin()
     {
         return $this->base_plugin_admin;
     }
@@ -296,7 +296,7 @@ class Read_More_Wp_Plus{
      *
      * @return  self
      */ 
-    public function set_base_plugin_admin(Read_More_Wp_Admin $base_plugin_admin)
+    public function rmwp_set_base_plugin_admin(Read_More_Wp_Admin $base_plugin_admin)
     {
         $this->base_plugin_admin = $base_plugin_admin;
 
@@ -308,7 +308,7 @@ class Read_More_Wp_Plus{
      *
      * @return  Read_More_Wp_Settings
      */ 
-    public function get_base_plugin_settings()
+    public function rmwp_get_base_plugin_settings()
     {
         return $this->base_plugin_settings;
     }
@@ -320,7 +320,7 @@ class Read_More_Wp_Plus{
      *
      * @return  self
      */ 
-    public function set_base_plugin_settings(Read_More_Wp_Settings $base_plugin_settings)
+    public function rmwp_set_base_plugin_settings(Read_More_Wp_Settings $base_plugin_settings)
     {
         $this->base_plugin_settings = $base_plugin_settings;
 
@@ -332,7 +332,7 @@ class Read_More_Wp_Plus{
      *
      * @return  Read_More_Wp_Settings
      */ 
-    public function get_plus_settings()
+    public function rmwp_get_plus_settings()
     {
         return $this->plus_settings;
     }
@@ -344,7 +344,7 @@ class Read_More_Wp_Plus{
      *
      * @return  self
      */ 
-    public function set_plus_settings(Read_More_Wp_Settings $plus_settings)
+    public function rmwp_set_plus_settings(Read_More_Wp_Settings $plus_settings)
     {
         $this->plus_settings = $plus_settings;
 

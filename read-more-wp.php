@@ -53,7 +53,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
      */
     function activate_read_more_wp() {
         require_once plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp-activator.php';
-        Read_More_Wp_Activator::activate();
+        Read_More_Wp_Activator::rmwp_activate();
     }
 
     /**
@@ -62,7 +62,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
      */
     function deactivate_read_more_wp() {
         require_once plugin_dir_path( __FILE__ ) . 'includes/class-read-more-wp-deactivator.php';
-        Read_More_Wp_Deactivator::deactivate();
+        Read_More_Wp_Deactivator::rmwp_deactivate();
     }
 
     register_activation_hook( __FILE__, 'activate_read_more_wp' );
@@ -146,13 +146,13 @@ if ( function_exists( 'rmwp_fs' ) ) {
                 $plugin_plus = new Read_More_Wp_Plus( $plugin );
 
                 // Load Premium scripts and styles.
-                $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_scripts' );
-                $plugin->get_loader()->add_action( 'wp_enqueue_scripts', $plugin_plus, 'enqueue_styles' );
+                $plugin->rmwp_get_loader()->rmwp_add_action( 'wp_enqueue_scripts', $plugin_plus, 'rmwp_enqueue_scripts' );
+                $plugin->rmwp_get_loader()->rmwp_add_action( 'wp_enqueue_scripts', $plugin_plus, 'rmwp_enqueue_styles' );
             }
         }
         
         // Execute all of the plugin hooks with WordPress.
-        $plugin->run();
+        $plugin->rmwp_run();
     }
 
     // Start the plugin.

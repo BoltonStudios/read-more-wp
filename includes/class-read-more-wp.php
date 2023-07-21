@@ -11,6 +11,7 @@
  *
  * @package    Read_More_Wp
  * @subpackage Read_More_Wp/includes
+ * @author     Aaron Bolton <aaron@boltonstudios.com>
  */
 
 /**
@@ -112,11 +113,11 @@ class Read_More_Wp {
         $this->plugin_slug = 'read-more-wp';
         $this->plugin_basename = $plugin_basename;
 
-		$this->load_dependencies();
-		$this->set_locale();
-        $this->init();
-		$this->define_admin_hooks();
-		$this->define_public_hooks();
+		$this->rmwp_load_dependencies();
+		$this->rmwp_set_locale();
+        $this->rmwp_init();
+		$this->rmwp_define_admin_hooks();
+		$this->rmwp_define_public_hooks();
 
 	}
         
@@ -126,19 +127,19 @@ class Read_More_Wp {
      *
      * @since    1.0.0
      */
-    public function init() {
+    public function rmwp_init() {
 
         $this->plugin_settings = new Read_More_Wp_Settings(
-            $this->get_plugin_name(),
-            $this->get_plugin_slug(),
-            $this->get_version()
+            $this->rmwp_get_plugin_name(),
+            $this->rmwp_get_plugin_slug(),
+            $this->rmwp_get_version()
         );
         
         $this->plugin_admin = new Read_More_Wp_Admin(
-            $this->get_plugin_name(),
-            $this->get_plugin_slug(),
-            $this->get_version(),
-            apply_filters('read-more-wp-settings-override', $this->get_plugin_settings())
+            $this->rmwp_get_plugin_name(),
+            $this->rmwp_get_plugin_slug(),
+            $this->rmwp_get_version(),
+            apply_filters('read-more-wp-settings-override', $this->rmwp_get_plugin_settings())
         );
     }
 
@@ -158,7 +159,7 @@ class Read_More_Wp {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function load_dependencies() {
+	private function rmwp_load_dependencies() {
 
 		/**
 		 * The class responsible for orchestrating the actions and filters of the
@@ -201,11 +202,11 @@ class Read_More_Wp {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function set_locale() {
+	private function rmwp_set_locale() {
 
 		$plugin_i18n = new Read_More_Wp_i18n();
 
-		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
+		$this->loader->rmwp_add_action( 'plugins_loaded', $plugin_i18n, 'rmwp_load_plugin_textdomain' );
 
 	}
 
@@ -216,15 +217,15 @@ class Read_More_Wp {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_admin_hooks() {
+	private function rmwp_define_admin_hooks() {
 
 		$plugin_admin = $this->plugin_admin;
 
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
-		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
-        $this->loader->add_action( 'admin_init', $plugin_admin, 'init_settings' );
-        $this->loader->add_action( 'admin_menu', $plugin_admin, 'add_options_page' );
-        $this->loader->add_filter( 'plugin_action_links_' . $this->plugin_basename, $this->plugin_admin, 'admin_plugin_listing_actions');
+		$this->loader->rmwp_add_action( 'admin_enqueue_scripts', $plugin_admin, 'rmwp_enqueue_styles' );
+		$this->loader->rmwp_add_action( 'admin_enqueue_scripts', $plugin_admin, 'rmwp_enqueue_scripts' );
+        $this->loader->rmwp_add_action( 'admin_init', $plugin_admin, 'rmwp_init_settings' );
+        $this->loader->rmwp_add_action( 'admin_menu', $plugin_admin, 'rmwp_add_options_page' );
+        $this->loader->rmwp_add_filter( 'plugin_action_links_' . $this->plugin_basename, $this->plugin_admin, 'rmwp_admin_plugin_listing_actions');
 
 	}
 
@@ -235,12 +236,12 @@ class Read_More_Wp {
 	 * @since    1.0.0
 	 * @access   private
 	 */
-	private function define_public_hooks() {
+	private function rmwp_define_public_hooks() {
 
-		$plugin_public = new Read_More_Wp_Public( $this->get_plugin_name(), $this->get_version() );
+		$plugin_public = new Read_More_Wp_Public( $this->rmwp_get_plugin_name(), $this->rmwp_get_version() );
 
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
-		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
+		$this->loader->rmwp_add_action( 'wp_enqueue_scripts', $plugin_public, 'rmwp_enqueue_styles' );
+		$this->loader->rmwp_add_action( 'wp_enqueue_scripts', $plugin_public, 'rmwp_enqueue_scripts' );
 
 	}
 
@@ -249,8 +250,8 @@ class Read_More_Wp {
 	 *
 	 * @since    1.0.0
 	 */
-	public function run() {
-		$this->loader->run();
+	public function rmwp_run() {
+		$this->loader->rmwp_run();
 	}
 
     // Getters & Setters
@@ -261,7 +262,7 @@ class Read_More_Wp {
 	 * @since     1.0.0
 	 * @return    string    The name of the plugin.
 	 */
-	public function get_plugin_name() {
+	public function rmwp_get_plugin_name() {
 		return $this->plugin_name;
 	}
 
@@ -271,7 +272,7 @@ class Read_More_Wp {
      * @since     1.0.0
      * @return    string    The basename of the plugin.
      */
-    public function get_plugin_basename() {
+    public function rmwp_get_plugin_basename() {
         return $this->plugin_basename;
     }
 
@@ -281,7 +282,7 @@ class Read_More_Wp {
      * @since     1.0.0
      * @return    string    The basename of the plugin.
      */
-    public function set_plugin_basename( $plugin_basename ) {
+    public function rmwp_set_plugin_basename( $plugin_basename ) {
         $this->plugin_basename = $plugin_basename;
     }
 
@@ -292,7 +293,7 @@ class Read_More_Wp {
      * @since     1.0.0
      * @return    string    The name of the plugin.
      */
-    public function get_plugin_slug() {
+    public function rmwp_get_plugin_slug() {
         return $this->plugin_slug;
     }
 
@@ -302,7 +303,7 @@ class Read_More_Wp {
 	 * @since     1.0.0
 	 * @return    Read_More_Wp_Loader    Orchestrates the hooks of the plugin.
 	 */
-	public function get_loader() {
+	public function rmwp_get_loader() {
 		return $this->loader;
 	}
 
@@ -312,7 +313,7 @@ class Read_More_Wp {
 	 * @since     1.0.0
 	 * @return    string    The version number of the plugin.
 	 */
-	public function get_version() {
+	public function rmwp_get_version() {
 		return $this->version;
 	}
 
@@ -321,7 +322,7 @@ class Read_More_Wp {
      *
      * @return  Read_More_Wp_Settings
      */ 
-    public function get_plugin_settings()
+    public function rmwp_get_plugin_settings()
     {
         return $this->plugin_settings;
     }
@@ -333,7 +334,7 @@ class Read_More_Wp {
      *
      * @return  self
      */ 
-    public function set_plugin_settings(Read_More_Wp_Settings $plugin_settings)
+    public function rmwp_set_plugin_settings(Read_More_Wp_Settings $plugin_settings)
     {
         $this->plugin_settings = $plugin_settings;
 
@@ -345,7 +346,7 @@ class Read_More_Wp {
      *
      * @return  Read_More_Wp_Admin
      */ 
-    public function get_plugin_admin()
+    public function rmwp_get_plugin_admin()
     {
         return $this->plugin_admin;
     }
@@ -357,7 +358,7 @@ class Read_More_Wp {
      *
      * @return  self
      */ 
-    public function set_plugin_admin(Read_More_Wp_Admin  $plugin_admin)
+    public function rmwp_set_plugin_admin(Read_More_Wp_Admin  $plugin_admin)
     {
         $this->plugin_admin = $plugin_admin;
 
