@@ -204,7 +204,11 @@ class Read_More_Wp_Admin {
                     </li>
                     <li>
                     <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
-                        Open a ticket on the <a href="https://wordpress.org/support/plugin/read-more-wp/" target="_blank" style="text-decoration: none;">Support Forum. <span class="dashicons dashicons-external" style="font-size: 14px;"></span></a>
+                        Open a ticket on the <a href="https://wordpress.org/support/plugin/read-more-wp/" target="_blank">Support Forum</a>. <span class="dashicons dashicons-external" style="font-size: 14px;"></span>
+                    </li>
+                    <li>
+                    <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
+                        Upgrade or downgrade on the <a href="/wp-admin/options-general.php?page=read-more-wp-pricing">Plans and Pricing Page</a>.
                     </li>
                 </ul>
             </p>
