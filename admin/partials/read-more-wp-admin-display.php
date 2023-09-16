@@ -26,7 +26,17 @@ $tabs = $this->settings->rmwp_get_tabs();
     <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
              
     <?php
-        $active_tab = isset( $_GET[ 'tab' ] ) ? $_GET[ 'tab' ] : 'rmwp_general';
+        // If the "tab" index of the $_GET array is not empty...
+        if( isset( $_GET[ 'tab' ] ) ){
+
+            // ...assign its escaped value to the $active_tab variable.
+            $active_tab = esc_attr( $_GET[ 'tab' ] );
+
+         } else{
+
+            // Otherwise, assign an escaped default value to the variable.
+            $active_tab = esc_attr( 'rmwp_general' );
+        }
     ?>
      
     <h2 class="nav-tab-wrapper">
