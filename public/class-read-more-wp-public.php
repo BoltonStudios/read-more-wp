@@ -188,12 +188,12 @@ class Read_More_Wp_Public {
             $attributes = shortcode_atts( $supported_attributes, $user_attributes );
             
             // Assign attribute values to the corresponding local variables.
-            $inline                 = htmlspecialchars( esc_attr__( $attributes[ 'inline' ] ), ENT_QUOTES);
-            $more_label             = htmlspecialchars( esc_html__( $attributes[ 'more' ] ), ENT_QUOTES);
-            $less_label             = htmlspecialchars( esc_html__( $attributes[ 'less' ] ), ENT_QUOTES);
-            $animation              = htmlspecialchars( esc_html__( $attributes[ 'animation' ] ), ENT_QUOTES);
-            $animation_speed        = htmlspecialchars( esc_html__( $attributes[ 'speed' ] ), ENT_QUOTES);
-            $user_ellipsis_value    = htmlspecialchars( esc_attr__( $attributes[ 'ellipsis' ] ), ENT_QUOTES);
+            $inline                 = htmlspecialchars( esc_attr( $attributes[ 'inline' ] ), ENT_QUOTES);
+            $more_label             = htmlspecialchars( esc_html( $attributes[ 'more' ] ), ENT_QUOTES);
+            $less_label             = htmlspecialchars( esc_html( $attributes[ 'less' ] ), ENT_QUOTES);
+            $animation              = htmlspecialchars( esc_html( $attributes[ 'animation' ] ), ENT_QUOTES);
+            $animation_speed        = htmlspecialchars( esc_html( $attributes[ 'speed' ] ), ENT_QUOTES);
+            $user_ellipsis_value    = htmlspecialchars( esc_attr( $attributes[ 'ellipsis' ] ), ENT_QUOTES);
 
             // If the user specified ellipsis=false in the shortcode attributes...
             if( $user_ellipsis_value == false || $user_ellipsis_value == 'false' || $user_ellipsis_value == 'hide' || $user_ellipsis_value == 'off' ){

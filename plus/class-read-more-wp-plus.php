@@ -158,23 +158,23 @@ class Read_More_Wp_Plus{
 
                 <!--No Animation-->
                 <option value="none" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'none', false ) ) : ( '' ) ); ?>>
-                <?php esc_html_e( 'None', 'rmwp' ); ?>
+                <?php esc_html_e( 'None', 'read-more-wp' ); ?>
                 </option>
                 <!--Slide Animation-->
                 <option value="slide" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'slide', false ) ) : ( '' ) ); ?>>
-                <?php esc_html_e( 'Slide', 'rmwp' ); ?>
+                <?php esc_html_e( 'Slide', 'read-more-wp' ); ?>
                 </option>
                 <!--Fade Animation-->
                 <option value="fade" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'fade', false ) ) : ( '' ) ); ?>>
-                <?php esc_html_e( 'Fade', 'rmwp' ); ?>
+                <?php esc_html_e( 'Fade', 'read-more-wp' ); ?>
                 </option>
                 <!--Fade Animation-->
                 <option value="fold" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'fold', false ) ) : ( '' ) ); ?>>
-                <?php esc_html_e( 'Fold', 'rmwp' ); ?>
+                <?php esc_html_e( 'Fold', 'read-more-wp' ); ?>
                 </option>
                 <!--Pop-Up Animation-->
                 <option value="popUp" <?php echo esc_attr( isset( $setting ) ? ( selected( $setting, 'popUp', false ) ) : ( '' ) ); ?>>
-                <?php esc_html_e( 'Pop-Up', 'rmwp' ); ?>
+                <?php esc_html_e( 'Pop-Up', 'read-more-wp' ); ?>
                 </option>
 
             </select>
