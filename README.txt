@@ -73,6 +73,10 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 == Changelog ==
 
+= 1.1.4 =
+* Date Released: 2023-09-15
+* Implemented various changes requested by WP Plugin Review Taem.
+
 = 1.1.3 =
 * Date Released: 2023-07-21
 * Updated Freemius SDK to the latest version.
