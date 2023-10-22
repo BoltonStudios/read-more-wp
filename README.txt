@@ -5,7 +5,7 @@ Tags: read more, show more, toggle text, ellipsis
 Requires at least: 4.0.0
 Tested up to: 6.2.2
 Requires PHP: 5.4
-Stable tag: 1.1.3
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,9 +73,13 @@ If you found this free plugin helpful, you can support the developer by upgradin
 
 == Changelog ==
 
+= 1.1.5 =
+* Date Released: 2023-10-21
+* Implemented further changes requested by WP Plugin Review Team.
+
 = 1.1.4 =
 * Date Released: 2023-09-15
-* Implemented various changes requested by WP Plugin Review Taem.
+* Implemented various changes requested by WP Plugin Review Team.
 
 = 1.1.3 =
 * Date Released: 2023-07-21
