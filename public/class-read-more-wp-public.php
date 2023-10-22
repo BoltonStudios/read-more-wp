@@ -10,6 +10,9 @@
  * @subpackage Read_More_Wp/public
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * The public-facing functionality of the plugin.
  *

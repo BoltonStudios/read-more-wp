@@ -14,6 +14,9 @@
  * @author     Aaron Bolton <aaron@boltonstudios.com>
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * The core plugin class.
  *

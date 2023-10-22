@@ -10,6 +10,9 @@
  * @subpackage Read_More_Wp/admin
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * The admin-specific functionality of the plugin.
  *

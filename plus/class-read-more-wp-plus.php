@@ -10,6 +10,9 @@
  * @subpackage Read_More_Wp/plus
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 /**
  * Read_More_Wp_Plus Main Class
  */

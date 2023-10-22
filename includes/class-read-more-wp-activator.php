@@ -12,6 +12,11 @@
  * @subpackage Read_More_Wp/includes
  * @author     Aaron Bolton <aaron@boltonstudios.com>
  */
+
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
+// Define class.
 class Read_More_Wp_Activator {
 
 	/**

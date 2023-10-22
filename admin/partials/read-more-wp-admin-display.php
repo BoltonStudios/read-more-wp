@@ -12,6 +12,9 @@
  * @subpackage Read_More_Wp/admin/partials
  */
 
+// Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) exit;
+
 $tabs = $this->settings->rmwp_get_tabs();
 ?>
 
@@ -30,8 +33,7 @@ $tabs = $this->settings->rmwp_get_tabs();
         if( isset( $_GET[ 'tab' ] ) ){
 
             // ...assign its escaped value to the $active_tab variable.
-            $active_tab = esc_attr( $_GET[ 'tab' ] );
-
+            $active_tab = esc_attr( sanitize_text_field( $_GET[ 'tab' ] ) );
          } else{
 
             // Otherwise, assign an escaped default value to the variable.
