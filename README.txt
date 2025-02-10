@@ -3,9 +3,9 @@ Contributors: boltonstudios
 Donate link: https://ko-fi.com/boltonstudios
 Tags: read more, show more, toggle text, ellipsis
 Requires at least: 4.0.0
-Tested up to: 6.3.2
+Tested up to: 6.7.1
 Requires PHP: 5.4
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -72,6 +72,10 @@ If you found this free plugin helpful, you can support the developer by upgradin
 4. A block of content revealed with the "read less" button toggle.
 
 == Changelog ==
+
+= 1.1.6 =
+* Date Released: 2025-02-09
+* Updated Freemius SDK to the latest version.
 
 = 1.1.5 =
 * Date Released: 2023-10-21

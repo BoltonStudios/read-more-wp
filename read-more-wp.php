@@ -16,7 +16,7 @@
  * Plugin Name:       Read More WP
  * Plugin URI:        https://wordpress.org/plugins/read-more-wp/
  * Description:       Create excerpts and hide text with an elegant toggle button to show more.
- * Version:           1.1.5
+ * Version:           1.1.6
  * Author:            Aaron Bolton
  * Author URI:        https://www.boltonstudios.com/read-more-wp/
  * License:           GPL-2.0+
@@ -44,7 +44,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
      * Start at version 1.0.0 and use SemVer - https://semver.org
      * Rename this for your plugin and update it as you release new versions.
      */
-    define( 'READ_MORE_WP_VERSION', '1.1.5' );
+    define( 'READ_MORE_WP_VERSION', '1.1.6' );
     define( 'READ_MORE_WP_BASENAME', plugin_basename( __FILE__ ) );
 
     /**
