@@ -109,12 +109,12 @@ class Read_More_Wp_Settings {
         // General
         $sections[] = array(
             'id'  => 'rmwp_section_for_defaults', // id
-            'title'  => __( 'Default Plugin Settings' ), // title
+            'title'  => __( 'Default Plugin Settings', 'read-more-wp' ), // title
             'page'  => 'rmwp_general' // page
         );
         $sections[] = array(
             'id'  => 'rmwp_section_for_support', // id
-            'title'  => __( 'Support', 'rmwp_general' ), // title
+            'title'  => __( 'Support', 'read-more-wp' ), // title
             'page'  => 'rmwp_support' // page
         );
 
@@ -130,7 +130,7 @@ class Read_More_Wp_Settings {
         //
         $settings[] = array(
             'id'        => 'rmwp_more_button_label', // id. Used only internally.
-            'title'     => __( 'Read More Button Label' ), // title.
+            'title'     => __( 'Read More Button Label', 'read-more-wp' ), // title.
             'callback'  => 'rmwp_more_button_label_field_cb', // callback.
             'tab'       => 'rmwp_general', // page
             'section'   => 'rmwp_section_for_defaults'
@@ -139,7 +139,7 @@ class Read_More_Wp_Settings {
         //
         $settings[] = array(
             'id'        => 'rmwp_less_button_label', // id. Used only internally.
-            'title'     => __( 'Read Less Button Label' ), // title.
+            'title'     => __( 'Read Less Button Label', 'read-more-wp' ), // title.
             'callback'  => 'rmwp_less_button_label_field_cb', // callback.
             'tab'       => 'rmwp_general', // page
             'section'   => 'rmwp_section_for_defaults'
@@ -148,7 +148,7 @@ class Read_More_Wp_Settings {
         //
         $settings[] = array(
             'id'        => 'rmwp_ellipsis_toggle', // id. Used only internally.
-            'title'     => __( 'Hide Ellipsis ("...")' ), // title.
+            'title'     => __( 'Hide Ellipsis ("...")', 'read-more-wp' ), // title.
             'callback'  => 'rmwp_ellipsis_toggle_checkbox_field_cb', // callback.
             'tab'       => 'rmwp_general', // page
             'section'   => 'rmwp_section_for_defaults'

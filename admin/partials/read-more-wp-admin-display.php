@@ -49,12 +49,12 @@ $tabs = $this->settings->rmwp_get_tabs();
             $option_group = $tab[1];
             $option_name = $tab[2];
             $active_tab_class = ($active_tab == $option_group) ? 'nav-tab-active' : '';
-            echo '<a href="?page=read-more-wp&tab='. esc_attr( $option_group ) .'" id="rmwp-nav-tab-'. esc_attr( $i ) .'" class="nav-tab '. esc_attr( $active_tab_class ) .'">'. esc_attr( $option_display_name ) .'</a>';
+            echo '<a href="'. esc_url( add_query_arg( array( 'page' => 'read-more-wp', 'tab' => $option_group ), admin_url( 'options-general.php' ) ) ) .'" id="rmwp-nav-tab-'. esc_attr( $i ) .'" class="nav-tab '. esc_attr( $active_tab_class ) .'">'. esc_html( $option_display_name ) .'</a>';
             $i++;
         }
     ?>
     </h2>
-    <form action="../../wp-admin/options.php" method="post">
+    <form action="<?php echo esc_url( admin_url( 'options.php' ) ); ?>" method="post">
     <?php
     
         // Output settings

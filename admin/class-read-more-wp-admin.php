@@ -85,7 +85,24 @@ class Read_More_Wp_Admin {
         $this->settings = $settings;
         $this->tabs = $settings->rmwp_get_tabs();
 
+        add_filter( 'rmwp_sanitize_rmwp_general_options', array( $this, 'rmwp_sanitize_general_options' ) );
 	}
+
+    /**
+     * Sanitize the General options before saving.
+     *
+     * @since    1.2.0
+     * @param    array    $input    The submitted options.
+     * @return   array
+     */
+    public function rmwp_sanitize_general_options( $input ) {
+
+        return array(
+            'rmwp_more_button_label' => isset( $input['rmwp_more_button_label'] ) ? sanitize_text_field( $input['rmwp_more_button_label'] ) : '',
+            'rmwp_less_button_label' => isset( $input['rmwp_less_button_label'] ) ? sanitize_text_field( $input['rmwp_less_button_label'] ) : '',
+            'rmwp_ellipsis_toggle'   => empty( $input['rmwp_ellipsis_toggle'] ) ? '' : '1',
+        );
+    }
 
     // Methods
     /**
@@ -115,7 +132,7 @@ class Read_More_Wp_Admin {
         
         $action_links = [];
         $action_links = array(
-            'settings' => '<a href="' . admin_url( 'admin.php?page=' . $this->plugin_slug ) . '">' . __( 'Settings', 'domain' ) . '</a>',
+            'settings' => '<a href="' . esc_url( admin_url( 'options-general.php?page=' . $this->plugin_slug ) ) . '">' . __( 'Settings', 'read-more-wp' ) . '</a>',
         );
         return array_merge( $action_links, $links );
     }
@@ -127,17 +144,24 @@ class Read_More_Wp_Admin {
      */
     public function rmwp_init_settings(){
 
-        // Register sections in the settings page
-        register_setting(
-            'rmwp_plus', // option group
-            'rmwp_plus_options' // option name
-        );
-    
-        // Tabs
-        foreach($this->tabs as $tab){
+        // Settings for each tab, including tabs added by extensions (e.g., Read More WP Plus).
+        foreach( $this->settings->rmwp_get_tabs() as $tab ){
+            $option_name = $tab[2];
             register_setting(
                 $tab[1], // option group
-                $tab[2] // option name
+                $option_name, // option name
+                array(
+                    'sanitize_callback' => function( $value ) use ( $option_name ) {
+
+                        /**
+                         * Filters the submitted value of a Read More WP option before it is saved.
+                         *
+                         * @since 1.2.0
+                         * @param array $value The submitted value.
+                         */
+                        return apply_filters( 'rmwp_sanitize_' . $option_name, is_array( $value ) ? $value : array() );
+                    },
+                )
             );
         }
         // Sections
@@ -145,7 +169,7 @@ class Read_More_Wp_Admin {
             add_settings_section(
                 $section['id'], // id
                 $section['title'], // title
-                $section['id'] . '_cb', // callback
+                isset( $section['callback'] ) ? $section['callback'] : $section['id'] . '_cb', // callback
                 $section['page'] // page
             );
         }
@@ -156,7 +180,7 @@ class Read_More_Wp_Admin {
                 $setting['title'],
                 $setting['callback'],
                 $setting['tab'],
-                $setting['section'], 
+                $setting['section'],
                 [
                     'label_for' => $setting['id'],
                     'class' => 'rmwp_row'
@@ -188,6 +212,10 @@ class Read_More_Wp_Admin {
             </p>
             <p id="<?php echo esc_attr( $args['id'] ); ?>-3">
                 Example overrides:<br />[start-read-more more="Show More" less="Show Less" inline=true ellipsis=false][end-read-more]
+            </p>
+            <p id="<?php echo esc_attr( $args['id'] ); ?>-4">
+                <strong style="font-size: 14px">Block</strong><br/>
+                In the block editor, add the <strong>Read More</strong> block and place the content to hide inside it.
 
             </p>
             <hr />
@@ -203,7 +231,7 @@ class Read_More_Wp_Admin {
                 <ul>
                     <li>
                     <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
-                    Send a message using the <a href="/wp-admin/options-general.php?page=read-more-wp-contact">Contact Form</a>.
+                    Send a message using the <a href="<?php echo esc_url( admin_url( 'options-general.php?page=read-more-wp-contact' ) ); ?>">Contact Form</a>.
                     </li>
                     <li>
                     <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
@@ -211,7 +239,7 @@ class Read_More_Wp_Admin {
                     </li>
                     <li>
                     <span class="dashicons dashicons-arrow-right-alt" style="font-size: 14px;"></span> 
-                        Upgrade or downgrade on the <a href="/wp-admin/options-general.php?page=read-more-wp-pricing">Plans and Pricing Page</a>.
+                        Upgrade or downgrade on the <a href="<?php echo esc_url( admin_url( 'options-general.php?page=read-more-wp-pricing' ) ); ?>">Plans and Pricing Page</a>.
                     </li>
                 </ul>
             </p>
