@@ -13,7 +13,6 @@
 	var rmwp = window.rmwp = window.rmwp || {};
 	var animations = {};
 	var modes = {};
-	var busy = {};
 
 	/**
 	 * Show or hide an element. Also clears inline "display: none" used by markup from earlier versions.
@@ -32,27 +31,106 @@
 		return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
 	}
 
+	// The elements that belong to each button wrapper, found once and then remembered.
+	var parts = typeof WeakMap === 'function' ? new WeakMap() : null;
+
+	function byId( id ) {
+		return document.querySelectorAll( '[id="' + id + '"]' );
+	}
+
+	// The first element with this ID after (or the last one before) a node. Page builders and
+	// sliders sometimes repeat the same markup, so IDs are not always unique on the page.
+	function nearest( node, id, after ) {
+		var list = byId( id );
+		var flag = after ? 4 : 2; // Node.DOCUMENT_POSITION_FOLLOWING : Node.DOCUMENT_POSITION_PRECEDING
+
+		if ( after ) {
+			for ( var i = 0; i < list.length; i++ ) {
+				if ( node.compareDocumentPosition( list[ i ] ) & flag ) {
+					return list[ i ];
+				}
+			}
+		} else {
+			for ( var j = list.length - 1; j >= 0; j-- ) {
+				if ( node.compareDocumentPosition( list[ j ] ) & flag ) {
+					return list[ j ];
+				}
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Find the content, ellipsis, and end marker that belong to a button wrapper.
+	 */
+	function resolveParts( wrap, id ) {
+		var cached = parts && parts.get( wrap );
+
+		if ( cached ) {
+			return cached;
+		}
+
+		var found = {};
+		var container = wrap.parentElement;
+
+		if ( container && container.id === 'rmwp-toggle-end-' + id ) {
+
+			// Fade mode: the button lives in the end marker, after the content.
+			found.end = container;
+			found.toggle = nearest( container, 'rmwp-toggle-' + id, false );
+		} else {
+			found.toggle = nearest( wrap, 'rmwp-toggle-' + id, true );
+			found.end = found.toggle ? nearest( found.toggle, 'rmwp-toggle-end-' + id, true ) : null;
+
+			// Markup from versions before 1.2.0 has no ID on the end element.
+			if ( found.toggle && ! found.end ) {
+				var anchor = found.toggle.parentElement && found.toggle.parentElement.classList.contains( 'rmwp-animation-popUp-overlay' ) ? found.toggle.parentElement : found.toggle;
+				var next = anchor.nextElementSibling;
+				while ( next && ! next.classList.contains( 'rmwp-toggle-end' ) ) {
+					next = next.nextElementSibling;
+				}
+				found.end = next;
+			}
+		}
+
+		var previous = wrap.previousElementSibling;
+		found.ellipsis = previous && previous.id === 'ellipsis-' + id ? previous : nearest( wrap, 'ellipsis-' + id, false );
+
+		if ( parts && found.toggle ) {
+			parts.set( wrap, found );
+		}
+
+		return found;
+	}
+
 	/**
 	 * Collect the elements and settings for a toggle.
+	 *
+	 * @param {Element|string} target   A button, a button wrapper, or a toggle ID.
+	 * @param {Object}         fallback Labels and speed from inline onclick handlers (markup before 1.2.0).
 	 */
-	function getToggle( id, fallback ) {
-		var toggle = document.getElementById( 'rmwp-toggle-' + id );
-		var wrap = document.getElementById( 'rmwp-button-wrap-' + id );
+	function getToggle( target, fallback ) {
+		var wrap = null;
 
-		if ( ! toggle || ! wrap ) {
+		if ( typeof target === 'string' ) {
+			wrap = document.getElementById( 'rmwp-button-wrap-' + target );
+		} else if ( target && target.closest ) {
+			wrap = target.closest( '.rmwp-button-wrap' );
+		}
+
+		if ( ! wrap ) {
 			return null;
 		}
 
 		var button = wrap.querySelector( 'button' );
-		var end = document.getElementById( 'rmwp-toggle-end-' + id );
+		var id = ( button && button.getAttribute( 'data-rmwp-id' ) ) || ( wrap.id || '' ).replace( 'rmwp-button-wrap-', '' );
+		var found = resolveParts( wrap, id );
+		var toggle = found.toggle;
+		var end = found.end;
 
-		// Markup from versions before 1.2.0 has no ID on the end element.
-		if ( ! end ) {
-			var anchor = toggle.parentElement && toggle.parentElement.classList.contains( 'rmwp-animation-popUp-overlay' ) ? toggle.parentElement : toggle;
-			end = anchor.nextElementSibling;
-			while ( end && ! end.classList.contains( 'rmwp-toggle-end' ) ) {
-				end = end.nextElementSibling;
-			}
+		if ( ! toggle || ! button ) {
+			return null;
 		}
 
 		var animation = 'none';
@@ -78,7 +156,7 @@
 			wrap: wrap,
 			button: button,
 			end: end,
-			ellipsis: document.getElementById( 'ellipsis-' + id ),
+			ellipsis: found.ellipsis,
 			more: button.getAttribute( 'data-more' ) || fallback.more || button.textContent,
 			less: button.getAttribute( 'data-less' ) || fallback.less || 'Read Less',
 			mode: toggle.getAttribute( 'data-rmwp-mode' ) || 'toggle',
@@ -98,6 +176,12 @@
 		t.button.textContent = open ? t.less : t.more;
 	}
 
+	// Whether the end marker comes right after the content (ignoring whitespace).
+	function followsContent( t ) {
+		var anchor = t.toggle.parentElement && t.toggle.parentElement.classList.contains( 'rmwp-animation-popUp-overlay' ) ? t.toggle.parentElement : t.toggle;
+		return anchor.nextElementSibling === t.end;
+	}
+
 	/**
 	 * Move the button to the end of the content (open) or back to the break point (closed),
 	 * keeping keyboard focus on it.
@@ -105,8 +189,13 @@
 	function moveButton( t, toEnd ) {
 		var hadFocus = document.activeElement === t.button;
 
-		if ( toEnd && t.end ) {
+		if ( toEnd && t.end && followsContent( t ) ) {
 			t.end.appendChild( t.wrap );
+		} else if ( toEnd ) {
+
+			// The browser moved the end marker away from the content (e.g., an inline toggle
+			// spanning several paragraphs), so show the button right after the revealed content.
+			t.toggle.parentNode.insertBefore( t.wrap, t.toggle.nextSibling );
 		} else if ( ! toEnd && t.ellipsis && t.ellipsis.parentNode ) {
 			t.ellipsis.parentNode.insertBefore( t.wrap, t.ellipsis.nextSibling );
 		}
@@ -181,21 +270,24 @@
 
 	/**
 	 * Expand or collapse a toggle.
+	 *
+	 * @param {Element|string} target   The clicked button (or its wrapper), or a toggle ID.
+	 * @param {Object}         fallback Labels and speed from inline onclick handlers (markup before 1.2.0).
 	 */
-	function toggle( id, fallback ) {
-		var t = getToggle( id, fallback );
+	function toggle( target, fallback ) {
+		var t = getToggle( target, fallback );
 
-		if ( ! t || busy[ id ] ) {
+		if ( ! t || t.wrap.rmwpBusy ) {
 			return;
 		}
 
 		var opening = ! t.toggle.classList.contains( 'open' );
 		var mode = getMode( t );
 
-		busy[ id ] = true;
+		t.wrap.rmwpBusy = true;
 
 		mode[ opening ? 'expand' : 'collapse' ]( t, function () {
-			busy[ id ] = false;
+			t.wrap.rmwpBusy = false;
 			dispatch( t, opening ? 'rmwp:expanded' : 'rmwp:collapsed' );
 		} );
 	}
@@ -204,9 +296,7 @@
 		var buttons = document.querySelectorAll( '.rmwp-button-wrap button' );
 
 		Array.prototype.forEach.call( buttons, function ( button ) {
-			var wrap = button.parentNode;
-			var id = button.getAttribute( 'data-rmwp-id' ) || ( wrap.id || '' ).replace( 'rmwp-button-wrap-', '' );
-			var t = getToggle( id );
+			var t = getToggle( button );
 
 			if ( t && ! t.wrap.getAttribute( 'data-rmwp-ready' ) ) {
 				t.wrap.setAttribute( 'data-rmwp-ready', '1' );
@@ -221,7 +311,7 @@
 
 		if ( button ) {
 			event.preventDefault();
-			toggle( button.getAttribute( 'data-rmwp-id' ) );
+			toggle( button );
 		}
 	} );
 
@@ -239,11 +329,15 @@
 	};
 
 	// Support inline onclick handlers in pages cached before version 1.2.0.
+	function legacyTarget( id ) {
+		var target = window.event && window.event.target;
+		return target && target.closest && target.closest( '.rmwp-button-wrap' ) ? target : id;
+	}
 	window.rmwpButtonAction = function ( id, more, less ) {
-		toggle( id, { more: more, less: less } );
+		toggle( legacyTarget( id ), { more: more, less: less } );
 	};
 	window.rmwpPlusButtonAction = function ( id, more, less, speed ) {
-		toggle( id, { more: more, less: less, speed: speed } );
+		toggle( legacyTarget( id ), { more: more, less: less, speed: speed } );
 	};
 
 	// Wait for extensions (loaded after this script) to register before initializing.

@@ -101,7 +101,8 @@
 	 * Pop-up: show the hidden content in a modal dialog. The native <dialog> element
 	 * traps focus, closes with the Escape key, and makes the rest of the page inert.
 	 */
-	var dialogs = {};
+	// The open dialog for each button wrapper.
+	var dialogs = typeof WeakMap === 'function' ? new WeakMap() : null;
 
 	rmwp.registerMode( 'animation-popUp', {
 		expand: function ( t, done ) {
@@ -133,7 +134,7 @@
 				if ( opening ) {
 					closeRequested = true;
 				} else {
-					rmwp.toggle( t.id );
+					rmwp.toggle( t.wrap );
 				}
 			};
 
@@ -148,7 +149,9 @@
 				}
 			} );
 
-			dialogs[ t.id ] = dialog;
+			if ( dialogs ) {
+				dialogs.set( t.wrap, dialog );
+			}
 
 			if ( dialog.showModal ) {
 				dialog.showModal();
@@ -162,12 +165,12 @@
 				opening = false;
 				done();
 				if ( closeRequested ) {
-					rmwp.toggle( t.id );
+					rmwp.toggle( t.wrap );
 				}
 			} );
 		},
 		collapse: function ( t, done ) {
-			var dialog = dialogs[ t.id ];
+			var dialog = dialogs ? dialogs.get( t.wrap ) : null;
 
 			if ( ! dialog ) {
 				done();
@@ -189,7 +192,7 @@
 					dialog.close();
 				}
 				dialog.parentNode.removeChild( dialog );
-				delete dialogs[ t.id ];
+				dialogs.delete( t.wrap );
 
 				t.button.focus();
 			} );
