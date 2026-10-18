@@ -53,22 +53,14 @@ class Read_More_Wp_Public {
     private $general_options;
 
 	/**
-	 * A variable to keep track of whether the user selected inline or block element breaks.
+	 * A stack of open [start-read-more] toggles, so each [end-read-more] closes the matching
+	 * element type (div or span) and any extra wrapper (e.g., the pop-up overlay).
 	 *
-	 * @since    1.0.0
+	 * @since    1.1.8
 	 * @access   private
-	 * @var      boolean
+	 * @var      array
 	 */
-	private $inline;
-
-	/**
-	 * A variable to provide an additional closing element for a wrapper if needed.
-	 *
-	 * @since    1.1.0
-	 * @access   private
-	 * @var      string
-	 */
-	private $close_wrapper;
+	private $open_toggles;
 
 	/**
 	 * Initialize the class and set its properties.
@@ -82,8 +74,7 @@ class Read_More_Wp_Public {
         // Initialize instance variables.
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-        $this->inline = false;
-        $this->close_wrapper = "";
+        $this->open_toggles = array();
 
         // Get user settings.
         $this->general_options = get_option( 'rmwp_general_options' );
@@ -160,67 +151,50 @@ class Read_More_Wp_Public {
     function rmwp_construct_start_read_more( $user_attributes ){
 
         // Initialize variables with default values.
-        $rmwp_id            = rand(); // Generate a random number to identify this read-more toggle.
-        $inline             = false;
-        $ellipsis           = '...';
-        $hide_ellipsis      = isset( $this->rmwp_get_general_options()['rmwp_ellipsis_toggle'] ) ? $this->rmwp_get_general_options()['rmwp_ellipsis_toggle'] : false;
+        $general_options    = $this->rmwp_get_general_options();
+        $rmwp_id            = $this->rmwp_get_unique_id();
         $default_more_label = 'Read More';
         $default_less_label = 'Read Less';
-        $more_label         = isset( $this->rmwp_get_general_options()['rmwp_more_button_label'] ) ? $this->rmwp_get_general_options()['rmwp_more_button_label'] : $default_more_label;
-        $less_label         = isset( $this->rmwp_get_general_options()['rmwp_less_button_label'] ) ? $this->rmwp_get_general_options()['rmwp_less_button_label'] : $default_less_label;
+        $hide_ellipsis      = ! empty( $general_options['rmwp_ellipsis_toggle'] );
+        $more_label         = isset( $general_options['rmwp_more_button_label'] ) ? $general_options['rmwp_more_button_label'] : $default_more_label;
+        $less_label         = isset( $general_options['rmwp_less_button_label'] ) ? $general_options['rmwp_less_button_label'] : $default_less_label;
         $toggle_break       = '';
         $classes            = '';
-        $animation          = null;
+        $close_wrapper      = '';
+        $button_action      = 'free';
         $animation_speed    = null;
-        $element_type       = 'div';
-        
-        // Handle attributes.
-        if( isset( $user_attributes ) ){
-            
-            // Set list of supported attributes and their default values.
-            $supported_attributes = array( 
-                'inline' => $inline ,
-                'ellipsis' => $ellipsis,
-                'more' => $more_label,
-                'less' => $less_label,
-                'animation' => $animation,
-                'speed' => $animation_speed
-            );
 
-            // Combine user attributes with known attributes and fill in defaults when needed.
-            $attributes = shortcode_atts( $supported_attributes, $user_attributes );
-            
-            // Assign attribute values to the corresponding local variables.
-            $inline                 = htmlspecialchars( esc_attr( $attributes[ 'inline' ] ), ENT_QUOTES);
-            $more_label             = htmlspecialchars( esc_html( $attributes[ 'more' ] ), ENT_QUOTES);
-            $less_label             = htmlspecialchars( esc_html( $attributes[ 'less' ] ), ENT_QUOTES);
-            $animation              = htmlspecialchars( esc_html( $attributes[ 'animation' ] ), ENT_QUOTES);
-            $animation_speed        = htmlspecialchars( esc_html( $attributes[ 'speed' ] ), ENT_QUOTES);
-            $user_ellipsis_value    = htmlspecialchars( esc_attr( $attributes[ 'ellipsis' ] ), ENT_QUOTES);
+        // Combine user attributes with known attributes and fill in defaults when needed.
+        $attributes = shortcode_atts(
+            array(
+                'inline'    => false,
+                'ellipsis'  => true,
+                'more'      => $more_label,
+                'less'      => $less_label,
+                'animation' => null,
+                'speed'     => null,
+            ),
+            $user_attributes
+        );
 
-            // If the user specified ellipsis=false in the shortcode attributes...
-            if( $user_ellipsis_value == false || $user_ellipsis_value == 'false' || $user_ellipsis_value == 'hide' || $user_ellipsis_value == 'off' ){
+        // Labels are plain text; they are escaped once at output.
+        $more_label = sanitize_text_field( (string) $attributes['more'] );
+        $less_label = sanitize_text_field( (string) $attributes['less'] );
+        $inline     = $this->rmwp_is_truthy( $attributes['inline'] );
+        $animation  = is_null( $attributes['animation'] ) ? null : sanitize_key( $attributes['animation'] );
+        $speed_attr = $attributes['speed'];
 
-                // Set the hide_ellipsis flag to true.
-                $hide_ellipsis = true;
-            }
+        // If the user specified ellipsis=false (or hide/off) in the shortcode attributes, hide the ellipsis.
+        if( ! $this->rmwp_is_truthy( $attributes['ellipsis'], true ) ){
+            $hide_ellipsis = true;
         }
 
         // If the More or Less button labels were set to empty strings, use the defaults.
-        $more_label = ( $more_label == '' ) ? $default_more_label : $more_label;
-        $less_label = ( $less_label == '' ) ? $default_less_label : $less_label;
-        
-        // Initialize more variables using updated attributes.
-        $btn_args   = "'$rmwp_id', '$more_label', '$less_label'";
-        $btn_action  = "rmwpButtonAction( $btn_args )";
+        $more_label = ( $more_label === '' ) ? $default_more_label : $more_label;
+        $less_label = ( $less_label === '' ) ? $default_less_label : $less_label;
 
-        // Assign the current inline variable value to the class instance variable.
-        // We want to keep track of the inline value to ensure the closing element matches
-        // the opening element, whether a span or a div.
-        $this->inline = $inline;
-
-        // If the current inline variable is true, change from the opening element from div to span.
-        $element_type = $inline ? 'span' : $element_type;
+        // Use a span for inline breaks, otherwise a div.
+        $element_type = $inline ? 'span' : 'div';
 
         // This IF block will be auto removed from the Free version.
         if ( rmwp_fs()->is__premium_only() ) {
@@ -232,78 +206,78 @@ class Read_More_Wp_Public {
 
                 // Initialize variables.
                 $plus_options = get_option( 'rmwp_plus_options' );
+                $allowed_animations = array( 'none', 'slide', 'fade', 'fold', 'popUp' );
 
                 // If the default animation option is set, assign its the value to the variable.
-                $animation_default_setting = isset( $plus_options['rmwp_animation'] ) ? $plus_options['rmwp_animation'] : '';
+                $animation_default_setting = isset( $plus_options['rmwp_animation'] ) ? $plus_options['rmwp_animation'] : 'none';
 
                 // If the default animation speed option is set, assign its the value to the variable.
                 $animation_speed_default_setting = isset( $plus_options['rmwp_animation_speed'] ) ? $plus_options['rmwp_animation_speed'] : 500;
 
-                // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
-                $animation = ( $animation == null ) ? $animation_default_setting : $animation;
+                // If the animation shortcode attribute is empty, use the animation default setting.
+                $animation = ( $animation === null || $animation === '' ) ? $animation_default_setting : $animation;
 
-                // Change the formatting of the pop-up attribute to camelcase.
-                $animation = ( $animation == 'pop-up' || $animation == 'popup' ) ? 'popUp' : $animation;
+                // Change the formatting of the pop-up attribute to camelcase (sanitize_key() lowercases it).
+                $animation = in_array( strtolower( $animation ), array( 'pop-up', 'popup' ), true ) ? 'popUp' : $animation;
 
-                // If the animation shortcode attribute is null, use the animation default setting. Otherwise, use the animation shortcode attribute.
-                $animation_speed = ( $animation_speed == null ) ? $animation_speed_default_setting : $animation_speed;
+                // Only allow known animations.
+                $animation = in_array( $animation, $allowed_animations, true ) ? $animation : 'none';
 
-                // Update the button arguments.
-                $btn_args = "'$rmwp_id', '$more_label', '$less_label', $animation_speed";
+                // If the speed shortcode attribute is missing or not a number, use the default setting. Speed is always an integer in milliseconds.
+                $animation_speed = is_numeric( $speed_attr ) ? $speed_attr : $animation_speed_default_setting;
+                $animation_speed = min( absint( $animation_speed ), 10000 );
 
                 // Add the animation attribute to the $classes variable, and prefix it with "animation-".
                 $classes .= 'animation-' . $animation;
 
                 // Use the Plus button action.
-                $btn_action  = "rmwpPlusButtonAction( $btn_args )";
+                $button_action = 'plus';
 
                 // If the user selected the pop-up animation...
                 if( $animation == 'popUp' ){
 
                     // Add the overlay element to the HTML.
-                    $toggle_break .= "<$element_type id='rmwp-animation-popUp-overlay-$rmwp_id' class='rmwp-animation-popUp-overlay' style='display: none'>";
+                    $toggle_break .= '<' . $element_type . ' id="rmwp-animation-popUp-overlay-' . esc_attr( $rmwp_id ) . '" class="rmwp-animation-popUp-overlay" style="display: none">';
 
-                    // Update the class instance close wrapper element string so that we can use it in the [end-read-more] shortcode.
-                    // Used to enclose the background overlay.
-                    $this->close_wrapper = "</$element_type>";
+                    // Close the overlay in the matching [end-read-more] shortcode.
+                    $close_wrapper = '</' . $element_type . '>';
                 }
             }
         }
 
+        // Remember how to close this toggle in the matching [end-read-more] shortcode.
+        $this->open_toggles[] = array(
+            'element_type'  => $element_type,
+            'close_wrapper' => $close_wrapper,
+        );
+
         // Construct the HTML for the element to wrap the hidden, togglable content.
-        $toggle_break .= '<'. $element_type  .' class="rmwp-toggle '. $classes .'" id="rmwp-toggle-'. $rmwp_id .'" style="display: none">';
-        
-        // If the $hide_ellipsis flag is true...
-        if( $hide_ellipsis == true ){
+        $toggle_break .= '<' . $element_type . ' class="rmwp-toggle ' . esc_attr( $classes ) . '" id="rmwp-toggle-' . esc_attr( $rmwp_id ) . '" style="display: none">';
 
-            // Add styles to hide the ellipsis.
-            // The ellipsis partly serves as the insertion point for the Read More button,
-            // so we do not want to omit it from the DOM; only the rendered HTML.
-            $ellipsis = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'" style="opacity: 0; position: absolute; z-index: -1;">...</span>';
+        // The ellipsis partly serves as the insertion point for the Read More button,
+        // so we do not want to omit it from the DOM; only hide it visually.
+        $ellipsis_style = $hide_ellipsis ? ' style="opacity: 0; position: absolute; z-index: -1;"' : '';
+        $ellipsis       = '<span class="ellipsis" id="ellipsis-' . esc_attr( $rmwp_id ) . '"' . $ellipsis_style . '>...</span>';
 
-        } else{
-
-            // Construct the default ellipsis HTML.
-            $ellipsis = '<span class="ellipsis" id="ellipsis-'. $rmwp_id .'">...</span>';
+        // Construct the button. The click handler is attached in JavaScript using these data attributes.
+        $button  = '<button name="read more" type="button" aria-expanded="false" aria-controls="rmwp-toggle-' . esc_attr( $rmwp_id ) . '"';
+        $button .= ' data-rmwp-id="' . esc_attr( $rmwp_id ) . '"';
+        $button .= ' data-rmwp-action="' . esc_attr( $button_action ) . '"';
+        $button .= ' data-more="' . esc_attr( $more_label ) . '"';
+        $button .= ' data-less="' . esc_attr( $less_label ) . '"';
+        if( $animation_speed !== null ){
+            $button .= ' data-speed="' . esc_attr( $animation_speed ) . '"';
         }
-        
-        // Construct the output elements.
-        $button     = '<button name="read more" type="button" onclick="'. $btn_action .'">';
-        $button    .= $more_label;
-        $button    .='</button>';
-        $read_more  = '<span class="rmwp-button-wrap" id="rmwp-button-wrap-'. $rmwp_id .'" style="display: none;">';
+        $button .= '>' . esc_html( $more_label ) . '</button>';
+
+        $read_more  = '<span class="rmwp-button-wrap" id="rmwp-button-wrap-' . esc_attr( $rmwp_id ) . '" style="display: none;">';
         $read_more .= $button;
         $read_more .= '</span>';
 
-        // Assemble the output.
-        $output  =  $ellipsis;
-        $output .=  $read_more;
-        $output .=  $toggle_break;
-        
-        // Return the output.
-        return $output;
+        // Assemble and return the output.
+        return $ellipsis . $read_more . $toggle_break;
     }
-    
+
     /**
 	 * [end-read-more]
 	 *
@@ -311,16 +285,58 @@ class Read_More_Wp_Public {
 	 */
     function rmwp_construct_end_read_more(){
 
-        // If the current inline variable is true, change from the opening element from div to span.
-        $element_type = $this->inline ? 'span' : 'div';
+        // Ignore an [end-read-more] without a matching [start-read-more].
+        if( empty( $this->open_toggles ) ){
+            return '';
+        }
 
-        // Set the closing element.
-        $output = "</$element_type>$this->close_wrapper<$element_type class='rmwp-toggle-end'></$element_type>";
+        // Close the most recently opened toggle.
+        $toggle       = array_pop( $this->open_toggles );
+        $element_type = $toggle['element_type'];
 
-        // Return the output.
-        return $output;
+        return '</' . $element_type . '>' . $toggle['close_wrapper'] . '<' . $element_type . ' class="rmwp-toggle-end"></' . $element_type . '>';
     }
-        
+
+    /**
+     * Interpret a shortcode attribute as a boolean.
+     *
+     * Accepts true/false, 1/0, yes/no, on/off, show/hide.
+     *
+     * @since    1.1.8
+     * @param    mixed    $value      The attribute value.
+     * @param    bool     $default    The value to use when the attribute is not recognized.
+     * @return   bool
+     */
+    private function rmwp_is_truthy( $value, $default = false ){
+
+        if( is_bool( $value ) ){
+            return $value;
+        }
+
+        $value = strtolower( trim( (string) $value ) );
+
+        if( in_array( $value, array( 'true', '1', 'yes', 'on', 'show' ), true ) ){
+            return true;
+        }
+
+        if( in_array( $value, array( 'false', '0', 'no', 'off', 'hide', '' ), true ) ){
+            return false;
+        }
+
+        return $default;
+    }
+
+    /**
+     * Generate an identifier for a read-more toggle that is unique within the page.
+     *
+     * @since    1.1.8
+     * @return   string
+     */
+    private function rmwp_get_unique_id(){
+
+        return function_exists( 'wp_unique_id' ) ? wp_unique_id( 'rmwp' ) : uniqid( 'rmwp' );
+    }
+
     /**
      * Get the value of general_options
      *

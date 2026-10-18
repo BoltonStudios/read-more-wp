@@ -40,6 +40,20 @@
         });
     });
 
+    // Handle clicks on Read More buttons using the settings in their data attributes.
+    $( document ).on( 'click', '.rmwp-button-wrap button[data-rmwp-action="plus"]', function( event ){
+
+        var button = $( this );
+
+        event.preventDefault();
+
+        rmwpPlusButtonAction(
+            button.attr( 'data-rmwp-id' ),
+            button.attr( 'data-more' ),
+            button.attr( 'data-less' ), parseInt( button.attr( 'data-speed' ), 10 ) || 0
+        );
+    });
+
 })( jQuery );
 
 // Define the onclick action event for the Read More button.
@@ -50,6 +64,9 @@ function rmwpPlusToggleElements( textToggle, buttonWrap, buttonToggle, buttonTog
 
     // Toggle the button's "open" class.
     buttonToggle.toggleClass( 'open' );
+
+    // Tell assistive technology whether the hidden content is expanded.
+    buttonToggle.attr( 'aria-expanded', textToggle.hasClass( 'open' ) ? 'true' : 'false' );
 
     // If the button text says 'Read More'...
     if( buttonToggleText == moreLabel ){
