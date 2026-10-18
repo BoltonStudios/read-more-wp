@@ -1,0 +1,16 @@
+{
+  "name": "read-more-wp",
+  "version": "1.2.0",
+  "description": "Create excerpts and hide text with an elegant toggle button to show more.",
+  "private": true,
+  "author": "boltonstudios",
+  "license": "GPL-2.0-or-later",
+  "scripts": {
+    "build": "wp-scripts build",
+    "start": "wp-scripts start",
+    "lint:js": "wp-scripts lint-js src"
+  },
+  "devDependencies": {
+    "@wordpress/scripts": "^36.1.0"
+  }
+}

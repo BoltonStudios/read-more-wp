@@ -1,0 +1,83 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "read-more-wp/read-more",
+  "version": "1.2.0",
+  "title": "Read More",
+  "category": "text",
+  "icon": "ellipsis",
+  "description": "Hide content behind a \"Read More\" button. Content placed before this block stays visible.",
+  "keywords": [
+    "read more",
+    "show more",
+    "toggle",
+    "expand",
+    "collapse"
+  ],
+  "textdomain": "read-more-wp",
+  "attributes": {
+    "moreLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "lessLabel": {
+      "type": "string",
+      "default": ""
+    },
+    "showEllipsis": {
+      "type": "boolean",
+      "default": false
+    },
+    "animation": {
+      "type": "string",
+      "default": ""
+    },
+    "speed": {
+      "type": "number"
+    },
+    "mode": {
+      "type": "string",
+      "default": ""
+    },
+    "fadeHeight": {
+      "type": "number"
+    },
+    "fadeColor": {
+      "type": "string",
+      "default": ""
+    },
+    "scrollBack": {
+      "type": "boolean"
+    },
+    "buttonStyle": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonAlign": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonColor": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonBackground": {
+      "type": "string",
+      "default": ""
+    },
+    "buttonBorder": {
+      "type": "string",
+      "default": ""
+    }
+  },
+  "supports": {
+    "anchor": true,
+    "html": false,
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
+  },
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css"
+}
