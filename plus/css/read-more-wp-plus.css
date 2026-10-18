@@ -1,62 +1,119 @@
-.rmwp-animation-popUp-overlay {
-  background-color: rgba(0, 0, 0, 0.6);
-  max-width: 100% !important;
-  width: 100%;
-  height: 100%;
-  margin: 0 0 0 0 !important;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 800;
-  overflow-x: hidden;
-  overflow-y: auto;
-  outline: 0;
+/* Custom button colors: keep the colors on hover and darken slightly. */
+.rmwp-button-wrap button:hover {
+  filter: brightness(0.95);
 }
-.rmwp-toggle.animation-popUp.open {
-  background-color: #ffffff;
+
+/* Button style: text link. */
+.rmwp-button-style-link button,
+.rmwp-button-style-link button:hover,
+.rmwp-button-style-link button.open {
+  color: var(--rmwp-button-color, #0d6efd);
+  background: none;
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin-left: 0.25em;
+  font-size: inherit;
+  text-decoration: underline;
+  filter: none;
+}
+.rmwp-button-style-link button:hover {
+  text-decoration: none;
+}
+
+/* Button style: full width. */
+.rmwp-button-wrap.rmwp-button-style-full {
+  display: block;
+}
+.rmwp-button-style-full button {
+  display: block;
+  width: 100%;
+  margin: 0.5em 0 0;
+  padding: 0.5em 1em;
+  font-size: 1em;
+}
+
+/* Alignment applies when the button is on its own line. */
+.rmwp-block > .rmwp-button-wrap[class*="rmwp-align-"],
+.rmwp-toggle-end > .rmwp-button-wrap[class*="rmwp-align-"] {
+  display: block;
+}
+.rmwp-block > .rmwp-button-wrap.rmwp-align-left,
+.rmwp-toggle-end > .rmwp-button-wrap.rmwp-align-left {
+  text-align: left;
+}
+.rmwp-block > .rmwp-button-wrap.rmwp-align-center,
+.rmwp-toggle-end > .rmwp-button-wrap.rmwp-align-center {
+  text-align: center;
+}
+.rmwp-block > .rmwp-button-wrap.rmwp-align-right,
+.rmwp-toggle-end > .rmwp-button-wrap.rmwp-align-right {
+  text-align: right;
+}
+
+/* Fade-out mode. */
+.rmwp-toggle.rmwp-mode-fade {
+  position: relative;
+}
+.rmwp-toggle.rmwp-mode-fade.rmwp-collapsed::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: min(5em, 60%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0), var(--rmwp-fade-color, #ffffff));
+  pointer-events: none;
+}
+.rmwp-mode-fade + .rmwp-toggle-end > .rmwp-button-wrap {
+  display: block;
+  margin-top: 0.5em;
+}
+.rmwp-mode-fade + .rmwp-toggle-end > .rmwp-button-wrap button {
+  margin-left: 0;
+}
+
+/* Pop-up. */
+dialog.rmwp-dialog {
   max-width: 750px;
   width: 90%;
-  height: auto;
-  overflow: hidden;
-  display: block;
-  margin: 55px auto;
-  padding: 2rem 2rem 2rem;
-  box-sizing: border-box;
-  position: relative;
-  z-index: 900;
+  max-height: calc(100vh - 4rem);
+  padding: 0;
   border: 1px solid rgba(0, 0, 0, 0.2);
   border-radius: 0.3rem;
-  box-shadow: 0 0 6px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 0 6px 0 rgba(0, 0, 0, 0.25);
+  background-color: var(--wp--preset--color--base, #ffffff);
+  color: var(--wp--preset--color--contrast, inherit);
 }
-.rmwp-toggle.animation-popUp .rmwp-button-wrap {
+dialog.rmwp-dialog::backdrop {
+  background-color: rgba(0, 0, 0, 0.6);
+}
+.rmwp-dialog-inner {
+  position: relative;
+  padding: 2.5rem 2rem 2rem;
+}
+.rmwp-dialog-inner > .rmwp-button-wrap {
   position: absolute;
   top: 5px;
   right: 10px;
 }
-.rmwp-toggle.animation-popUp .alignleft {
+.rmwp-dialog .alignleft {
   float: left;
   margin-inline-start: 0;
   margin-inline-end: 2em;
 }
-.rmwp-toggle.animation-popUp .aligncenter {
+.rmwp-dialog .aligncenter {
   margin-left: auto !important;
   margin-right: auto !important;
 }
-.rmwp-toggle.animation-popUp .alignright {
+.rmwp-dialog .alignright {
   float: right;
   margin-inline-start: 2em;
   margin-inline-end: 0;
 }
-.rmwp-toggle.animation-popUp .alignfull {
-  margin-right: calc(var(--wp--style--root--padding-right) * -1);
-  margin-left: calc(var(--wp--style--root--padding-left) * -1);
-  margin-block-start: 1.5rem;
-  margin-block-end: 0;
-}
-.rmwp-toggle.animation-popUp .alignwide {
-  max-width: var(--wp--style--global--wide-size);
-  margin-left: auto !important;
-  margin-right: auto !important;
-  margin-block-start: 1.5rem;
-  margin-block-end: 0;
+.rmwp-dialog .alignfull,
+.rmwp-dialog .alignwide {
+  max-width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }

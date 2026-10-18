@@ -1,261 +1,271 @@
-(function( $ ) {
+/**
+ * Read More WP Plus: animations, pop-ups, fade-out mode, and scroll-back.
+ */
+( function () {
 	'use strict';
 
+	var rmwp = window.rmwp;
+
+	if ( ! rmwp || ! rmwp.registerAnimation ) {
+		return;
+	}
+
+	function prefersReducedMotion() {
+		return !! ( window.matchMedia && window.matchMedia( '(prefers-reduced-motion: reduce)' ).matches );
+	}
+
 	/**
-	 * All of the code for your public-facing JavaScript source
-	 * should reside in this file.
-	 *
-	 * Note: It has been assumed you will write jQuery code here, so the
-	 * $ function reference has been prepared for usage within the scope
-	 * of this function.
-	 *
-	 * This enables you to define handlers, for when the DOM is ready:
-	 *
-	 * $(function() {
-	 *
-	 * });
-	 *
-	 * When the window is loaded:
-	 *
-	 * $( window ).load(function() {
-	 *
-	 * });
-	 *
-	 * ...and/or other possibilities.
-	 *
-	 * Ideally, it is not considered best practise to attach more than a
-	 * single DOM-ready or window-load handler for a particular page.
-	 * Although scripts in the WordPress core, Plugins and Themes may be
-	 * practising this, we should strive to set a better example in our own work.
+	 * Run a Web Animations API animation, then apply the final state and call done.
 	 */
+	function run( el, keyframes, speed, done, finish ) {
+		finish = finish || function () {};
 
-    // Check if the document is ready.
-    $( function() {
+		if ( ! el.animate || speed <= 0 ) {
+			finish();
+			done();
+			return;
+		}
 
-        // For each "read more" element, i.e., review...
-        $( ".rmwp-button-wrap" ).each( function(){
+		var animation = el.animate( keyframes, { duration: speed, easing: 'ease', fill: 'forwards' } );
 
-            // Display the Read More button.
-            $( this ).show();
-        });
-    });
+		animation.onfinish = function () {
+			finish();
+			animation.cancel();
+			done();
+		};
+	}
 
-    // Handle clicks on Read More buttons using the settings in their data attributes.
-    $( document ).on( 'click', '.rmwp-button-wrap button[data-rmwp-action="plus"]', function( event ){
+	// Transforms and heights do not apply to inline elements, so inline toggles fade instead.
+	function isInline( el ) {
+		return el.tagName === 'SPAN';
+	}
 
-        var button = $( this );
+	var fade = {
+		show: function ( el, speed, done ) {
+			rmwp.setVisible( el, true );
+			run( el, [ { opacity: 0 }, { opacity: 1 } ], speed, done );
+		},
+		hide: function ( el, speed, done ) {
+			run( el, [ { opacity: 1 }, { opacity: 0 } ], speed, done, function () {
+				rmwp.setVisible( el, false );
+			} );
+		},
+	};
 
-        event.preventDefault();
+	rmwp.registerAnimation( 'fade', fade );
 
-        rmwpPlusButtonAction(
-            button.attr( 'data-rmwp-id' ),
-            button.attr( 'data-more' ),
-            button.attr( 'data-less' ), parseInt( button.attr( 'data-speed' ), 10 ) || 0
-        );
-    });
+	rmwp.registerAnimation( 'slide', {
+		show: function ( el, speed, done ) {
+			if ( isInline( el ) ) {
+				return fade.show( el, speed, done );
+			}
+			rmwp.setVisible( el, true );
+			el.style.overflow = 'hidden';
+			run( el, [ { height: '0px' }, { height: el.scrollHeight + 'px' } ], speed, done, function () {
+				el.style.overflow = '';
+			} );
+		},
+		hide: function ( el, speed, done ) {
+			if ( isInline( el ) ) {
+				return fade.hide( el, speed, done );
+			}
+			el.style.overflow = 'hidden';
+			run( el, [ { height: el.offsetHeight + 'px' }, { height: '0px' } ], speed, done, function () {
+				rmwp.setVisible( el, false );
+				el.style.overflow = '';
+			} );
+		},
+	} );
 
-})( jQuery );
+	rmwp.registerAnimation( 'fold', {
+		show: function ( el, speed, done ) {
+			if ( isInline( el ) ) {
+				return fade.show( el, speed, done );
+			}
+			rmwp.setVisible( el, true );
+			el.style.transformOrigin = 'top left';
+			run( el, [ { transform: 'scale(0)', opacity: 0 }, { transform: 'scale(1)', opacity: 1 } ], speed, done );
+		},
+		hide: function ( el, speed, done ) {
+			if ( isInline( el ) ) {
+				return fade.hide( el, speed, done );
+			}
+			el.style.transformOrigin = 'top left';
+			run( el, [ { transform: 'scale(1)', opacity: 1 }, { transform: 'scale(0)', opacity: 0 } ], speed, done, function () {
+				rmwp.setVisible( el, false );
+			} );
+		},
+	} );
 
-// Define the onclick action event for the Read More button.
-function rmwpPlusToggleElements( textToggle, buttonWrap, buttonToggle, buttonToggleText, moreLabel, lessLabel, ellipsis ){
+	/**
+	 * Pop-up: show the hidden content in a modal dialog. The native <dialog> element
+	 * traps focus, closes with the Escape key, and makes the rest of the page inert.
+	 */
+	var dialogs = {};
 
-    // Toggle the text wrapper's "open" class.
-    textToggle.toggleClass( 'open' );
+	rmwp.registerMode( 'animation-popUp', {
+		expand: function ( t, done ) {
+			var dialog = document.createElement( 'dialog' );
+			var inner = document.createElement( 'div' );
+			var content = document.createElement( 'div' );
 
-    // Toggle the button's "open" class.
-    buttonToggle.toggleClass( 'open' );
+			dialog.className = 'rmwp-dialog';
+			inner.className = 'rmwp-dialog-inner';
+			content.className = 'rmwp-dialog-content';
 
-    // Tell assistive technology whether the hidden content is expanded.
-    buttonToggle.attr( 'aria-expanded', textToggle.hasClass( 'open' ) ? 'true' : 'false' );
+			while ( t.toggle.firstChild ) {
+				content.appendChild( t.toggle.firstChild );
+			}
 
-    // If the button text says 'Read More'...
-    if( buttonToggleText == moreLabel ){
+			rmwp.setState( t, true );
+			rmwp.setVisible( t.ellipsis, false );
 
-        // Change the button text to 'Read Less'.
-        jQuery( buttonToggle ).text( lessLabel )
+			inner.appendChild( t.wrap );
+			inner.appendChild( content );
+			dialog.appendChild( inner );
+			document.body.appendChild( dialog );
 
-        // If the textToggle is a pop-up...
-        if( textToggle.hasClass( 'animation-popUp' ) ){
+			var opening = true;
+			var closeRequested = false;
 
-            // Add the read-less button within the toggle text element (i.e., the pop-up window).
-            textToggle.prepend( buttonWrap );
+			// Close on Escape or a backdrop click. If the pop-up is still opening, close it when it finishes.
+			var requestClose = function () {
+				if ( opening ) {
+					closeRequested = true;
+				} else {
+					rmwp.toggle( t.id );
+				}
+			};
 
-        } else{
+			dialog.addEventListener( 'cancel', function ( event ) {
+				event.preventDefault();
+				requestClose();
+			} );
 
-            // Move button to the end of the toggled text.
-            textToggle.next( '.rmwp-toggle-end' ).append( buttonWrap );
-        }
+			dialog.addEventListener( 'click', function ( event ) {
+				if ( event.target === dialog ) {
+					requestClose();
+				}
+			} );
 
-    } else{
+			dialogs[ t.id ] = dialog;
 
-        // Otherwise, change the button text to 'Read More'.
-        jQuery( buttonToggle ).text( moreLabel )
+			if ( dialog.showModal ) {
+				dialog.showModal();
+			} else {
+				dialog.setAttribute( 'open', '' );
+			}
 
-        // Move button to the toggled text break point.
-        buttonWrap.insertAfter( ellipsis );
-    }
+			t.button.focus();
 
-    // If the textToggle lacks the "animation-none" class (i.e., it is animated)...
-    if( !textToggle.hasClass( 'animation-none' ) && !textToggle.hasClass( 'animation-' ) ){
-        
-        // Fade the button back in.
-        buttonToggle.fadeToggle();
-    }
-}
+			run( dialog, [ { opacity: 0, transform: 'translateY(-1rem)' }, { opacity: 1, transform: 'none' } ], t.speed, function () {
+				opening = false;
+				done();
+				if ( closeRequested ) {
+					rmwp.toggle( t.id );
+				}
+			} );
+		},
+		collapse: function ( t, done ) {
+			var dialog = dialogs[ t.id ];
 
-// Define the onclick action event for the Read More button.
-function rmwpPlusButtonAction( rmwpID, moreLabel, lessLabel, speed ){
+			if ( ! dialog ) {
+				done();
+				return;
+			}
 
-    // Define targets.
-    var textToggle          = jQuery( '#rmwp-toggle-' + rmwpID );
-    var ellipsis            = jQuery( '#ellipsis-' + rmwpID );
-    var buttonWrap          = jQuery( '#rmwp-button-wrap-' + rmwpID );
-    var buttonToggle        = buttonWrap.children( "button" );
-    var buttonToggleText    = buttonToggle.text();
+			run( dialog, [ { opacity: 1 }, { opacity: 0 } ], t.speed, done, function () {
+				var content = dialog.querySelector( '.rmwp-dialog-content' );
 
-    // Handle the animations.
-    if( textToggle.hasClass( 'animation-slide' ) == true ){
+				while ( content && content.firstChild ) {
+					t.toggle.appendChild( content.firstChild );
+				}
 
-        // Handle the slide animation.
-        
-        // Toggle the ellipsis visibility with the fade animation.
-        ellipsis.fadeToggle( 300 );
+				rmwp.setState( t, false );
+				rmwp.setVisible( t.ellipsis, true );
+				rmwp.moveButton( t, false );
 
-        // Toggle the button visibility with the fade animation.
-        buttonToggle.fadeToggle( 300, function() {
+				if ( dialog.close ) {
+					dialog.close();
+				}
+				dialog.parentNode.removeChild( dialog );
+				delete dialogs[ t.id ];
 
-            // Toggle the text visibility with the slide animation.
-            jQuery( textToggle ).slideToggle( 
-                speed, // Speed
-                rmwpPlusToggleElements(
-                    textToggle,
-                    buttonWrap,
-                    buttonToggle,
-                    buttonToggleText,
-                    moreLabel,
-                    lessLabel,
-                    ellipsis
-                ) // Animation complete.
-            );
-        });
+				t.button.focus();
+			} );
+		},
+	} );
 
-    } else if( textToggle.hasClass( 'animation-fade' ) == true ){
+	/**
+	 * Fade-out mode: show the start of the content, faded out, with a button to show the rest.
+	 */
+	function getFadeHeight( t ) {
+		var height = parseInt( window.getComputedStyle( t.toggle ).getPropertyValue( '--rmwp-fade-height' ), 10 );
+		return isNaN( height ) ? 200 : height;
+	}
 
-        // Handle the fade animation.
+	// Only offer the button when the content is taller than the visible height.
+	function checkOverflow( t ) {
+		if ( t.toggle.classList.contains( 'open' ) ) {
+			return;
+		}
+		var overflowing = t.toggle.scrollHeight > getFadeHeight( t ) + 1;
+		t.toggle.classList.toggle( 'rmwp-collapsed', overflowing );
+		rmwp.setVisible( t.wrap, overflowing );
+	}
 
-        // Toggle the ellipsis visibility with the fade animation.
-        ellipsis.fadeToggle( 300 );
+	var fadeToggles = [];
 
-        // Toggle the button visibility with the fade animation.
-        buttonToggle.fadeToggle( 300, function() {
+	rmwp.registerMode( 'fade', {
+		init: function ( t ) {
+			fadeToggles.push( t );
+			checkOverflow( t );
+		},
+		expand: function ( t, done ) {
+			var from = t.toggle.clientHeight;
+			var to = t.toggle.scrollHeight;
 
-            // Toggle the text visibility with the slide animation.
-            jQuery( textToggle ).fadeToggle( 
-                speed, // Speed
-                rmwpPlusToggleElements(
-                    textToggle,
-                    buttonWrap,
-                    buttonToggle,
-                    buttonToggleText,
-                    moreLabel,
-                    lessLabel,
-                    ellipsis
-                ) // Animation complete.
-            );
-        });   
-    } else if( textToggle.hasClass( 'animation-fold' ) == true ){
+			rmwp.setState( t, true );
+			t.toggle.classList.remove( 'rmwp-collapsed' );
 
-        // Handle the fold animation.
+			run( t.toggle, [ { maxHeight: from + 'px' }, { maxHeight: to + 'px' } ], t.speed, done, function () {
+				t.toggle.style.maxHeight = 'none';
+				t.toggle.style.overflow = '';
+			} );
+		},
+		collapse: function ( t, done ) {
+			var from = t.toggle.scrollHeight;
+			var to = getFadeHeight( t );
 
-        // Toggle the ellipsis visibility with the fade animation.
-        ellipsis.fadeToggle( 300 );
+			t.toggle.style.overflow = 'hidden';
 
-        // Toggle the button visibility with the fade animation.
-        buttonToggle.fadeToggle( 300, function(){
+			run( t.toggle, [ { maxHeight: from + 'px' }, { maxHeight: to + 'px' } ], t.speed, done, function () {
+				t.toggle.style.maxHeight = to + 'px';
+				t.toggle.classList.add( 'rmwp-collapsed' );
+				rmwp.setState( t, false );
+			} );
+		},
+	} );
 
-            // Toggle the text visibility with the fold animation.
-            jQuery( textToggle ).toggle( 
-                speed, // Speed
-                rmwpPlusToggleElements(
-                    textToggle,
-                    buttonWrap,
-                    buttonToggle,
-                    buttonToggleText,
-                    moreLabel,
-                    lessLabel,
-                    ellipsis
-                ) // Animation complete.
-            );
-        });   
-    } else if( textToggle.hasClass( 'animation-popUp' ) == true ){
+	// Images and fonts can change the content height after the page loads.
+	window.addEventListener( 'load', function () {
+		fadeToggles.forEach( checkOverflow );
+	} );
 
-        // Handle the pop-up animation.
+	/**
+	 * Scroll back: after collapsing long content, bring the button back into view.
+	 */
+	document.addEventListener( 'rmwp:collapsed', function ( event ) {
+		var button = event.detail && event.detail.button;
 
-        // Toggle the ellipsis visibility with the fade animation.
-        ellipsis.fadeToggle( 300 );
+		if ( ! button || button.getAttribute( 'data-scroll' ) !== '1' ) {
+			return;
+		}
 
-        // Toggle the button visibility with the fade animation.
-        buttonToggle.fadeToggle( 300, function(){
+		var rect = button.getBoundingClientRect();
 
-            // If the toggled text is "open" (expanded)...
-            if( textToggle.hasClass( 'open' ) ){
-
-                // Fade out the pop-up background overlay.
-                jQuery( '#rmwp-animation-popUp-overlay-' + rmwpID ).fadeOut();
-
-                // Toggle the pop-up element off instantly.
-                jQuery( textToggle ).toggle( 
-                    0, // Speed
-                    rmwpPlusToggleElements(
-                        textToggle,
-                        buttonWrap,
-                        buttonToggle,
-                        buttonToggleText,
-                        moreLabel,
-                        lessLabel,
-                        ellipsis
-                    ) // Animation complete.
-                );
-            } else {
-
-                // Fade in the pop-up background overlay.
-                jQuery( '#rmwp-animation-popUp-overlay-' + rmwpID ).fadeIn( speed, function(){
-                    
-                    // Toggle the element with a fade animation at the user-selected speed.
-                    jQuery( textToggle ).fadeIn( 
-                        speed, // Speed
-                        rmwpPlusToggleElements(
-                            textToggle,
-                            buttonWrap,
-                            buttonToggle,
-                            buttonToggleText,
-                            moreLabel,
-                            lessLabel,
-                            ellipsis
-                        ) // Animation complete.
-                    );
-                });
-            }
-        });   
-    } else {
-
-        // If the textToggle is not animated...
-
-        // Toggle the text visibility.
-        jQuery( textToggle ).toggle();
-
-        // Toggle the ellipsis visibility with the fade animation.
-        ellipsis.toggle();
-
-        // Toggle the other elements.
-        rmwpPlusToggleElements(
-            textToggle,
-            buttonWrap,
-            buttonToggle,
-            buttonToggleText,
-            moreLabel,
-            lessLabel,
-            ellipsis
-        )
-    }
-}
+		if ( rect.top < 0 || rect.bottom > window.innerHeight ) {
+			button.scrollIntoView( { block: 'center', behavior: prefersReducedMotion() ? 'auto' : 'smooth' } );
+		}
+	} );
+} )();
