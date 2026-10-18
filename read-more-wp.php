@@ -15,8 +15,10 @@
  * @wordpress-plugin
  * Plugin Name:       Read More WP
  * Plugin URI:        https://wordpress.org/plugins/read-more-wp/
- * Description:       Create excerpts and hide text with an elegant toggle button to show more.
- * Version:           1.1.8
+ * Description:       Hide content behind an elegant "Read More" button, with a block or shortcodes.
+ * Version:           1.2.0
+ * Requires at least: 6.3
+ * Requires PHP:      7.4
  * Author:            Aaron Bolton
  * Author URI:        https://www.boltonstudios.com/read-more-wp/
  * License:           GPL-2.0+
@@ -44,7 +46,7 @@ if ( function_exists( 'rmwp_fs' ) ) {
      * Start at version 1.0.0 and use SemVer - https://semver.org
      * Rename this for your plugin and update it as you release new versions.
      */
-    define( 'READ_MORE_WP_VERSION', '1.1.8' );
+    define( 'READ_MORE_WP_VERSION', '1.2.0' );
     define( 'READ_MORE_WP_BASENAME', plugin_basename( __FILE__ ) );
 
     /**
@@ -142,12 +144,8 @@ if ( function_exists( 'rmwp_fs' ) ) {
                 // ... premium only logic ...
                 require_once plugin_dir_path( __FILE__ ) . 'plus/class-read-more-wp-plus.php';
                 
-                // Load Premium Features and pass the plugin object to be modified
+                // Load Premium Features and pass the plugin object to be modified. Plus registers its own hooks.
                 $plugin_plus = new Read_More_Wp_Plus( $plugin );
-
-                // Load Premium scripts and styles.
-                $plugin->rmwp_get_loader()->rmwp_add_action( 'wp_enqueue_scripts', $plugin_plus, 'rmwp_enqueue_scripts' );
-                $plugin->rmwp_get_loader()->rmwp_add_action( 'wp_enqueue_scripts', $plugin_plus, 'rmwp_enqueue_styles' );
             }
         }
         
