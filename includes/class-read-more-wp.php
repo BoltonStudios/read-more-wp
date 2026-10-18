@@ -97,6 +97,15 @@ class Read_More_Wp {
      */
     private $plugin_admin;
 
+    /**
+     * The public-facing functionality.
+     *
+     * @since    1.2.0
+     * @access   private
+     * @var      Read_More_Wp_Public
+     */
+    private $plugin_public;
+
 	/**
 	 * Define the core functionality of the plugin.
 	 *
@@ -241,11 +250,18 @@ class Read_More_Wp {
 	 */
 	private function rmwp_define_public_hooks() {
 
-		$plugin_public = new Read_More_Wp_Public( $this->rmwp_get_plugin_name(), $this->rmwp_get_version() );
+		// The public class registers its own hooks. Assets are enqueued only on pages that render a toggle.
+		$this->plugin_public = new Read_More_Wp_Public( $this->rmwp_get_plugin_name(), $this->rmwp_get_version() );
+	}
 
-		$this->loader->rmwp_add_action( 'wp_enqueue_scripts', $plugin_public, 'rmwp_enqueue_styles' );
-		$this->loader->rmwp_add_action( 'wp_enqueue_scripts', $plugin_public, 'rmwp_enqueue_scripts' );
-
+	/**
+	 * Get the public-facing functionality object.
+	 *
+	 * @since    1.2.0
+	 * @return   Read_More_Wp_Public
+	 */
+	public function rmwp_get_plugin_public() {
+		return $this->plugin_public;
 	}
 
 	/**
