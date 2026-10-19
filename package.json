@@ -12,5 +12,13 @@
   },
   "devDependencies": {
     "@wordpress/scripts": "^36.1.0"
+  },
+  "overrides": {
+    "serialize-javascript": "^7.1.2",
+    "uuid": "^11.1.1",
+    "postcss-selector-parser": "^7.1.6",
+    "smol-toml": "^1.9.1",
+    "js-yaml@>=5.0.0": "^5.5.0",
+    "katex": "^0.18.2"
   }
 }
