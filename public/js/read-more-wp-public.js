@@ -187,7 +187,10 @@
 	 * keeping keyboard focus on it.
 	 */
 	function moveButton( t, toEnd ) {
-		var hadFocus = document.activeElement === t.button;
+
+		// Moving the button drops keyboard focus, so restore it for keyboard users. Skip this for
+		// mouse and touch: focusing inside a slider makes some sliders (e.g., Swiper) jump to that slide.
+		var hadFocus = document.activeElement === t.button && t.restoreFocus !== false;
 
 		if ( toEnd && t.end && followsContent( t ) ) {
 			t.end.appendChild( t.wrap );
@@ -273,13 +276,16 @@
 	 *
 	 * @param {Element|string} target   The clicked button (or its wrapper), or a toggle ID.
 	 * @param {Object}         fallback Labels and speed from inline onclick handlers (markup before 1.2.0).
+	 * @param {Object}         options  { restoreFocus: false } when activated by mouse or touch.
 	 */
-	function toggle( target, fallback ) {
+	function toggle( target, fallback, options ) {
 		var t = getToggle( target, fallback );
 
 		if ( ! t || t.wrap.rmwpBusy ) {
 			return;
 		}
+
+		t.restoreFocus = ! ( options && options.restoreFocus === false );
 
 		var opening = ! t.toggle.classList.contains( 'open' );
 		var mode = getMode( t );
@@ -311,7 +317,9 @@
 
 		if ( button ) {
 			event.preventDefault();
-			toggle( button );
+
+			// Keyboard activation (Enter/Space) reports detail 0; mouse and touch clicks report 1 or more.
+			toggle( button, null, { restoreFocus: event.detail === 0 } );
 		}
 	} );
 
@@ -333,11 +341,14 @@
 		var target = window.event && window.event.target;
 		return target && target.closest && target.closest( '.rmwp-button-wrap' ) ? target : id;
 	}
+	function legacyOptions() {
+		return { restoreFocus: ! ( window.event && window.event.detail > 0 ) };
+	}
 	window.rmwpButtonAction = function ( id, more, less ) {
-		toggle( legacyTarget( id ), { more: more, less: less } );
+		toggle( legacyTarget( id ), { more: more, less: less }, legacyOptions() );
 	};
 	window.rmwpPlusButtonAction = function ( id, more, less, speed ) {
-		toggle( legacyTarget( id ), { more: more, less: less, speed: speed } );
+		toggle( legacyTarget( id ), { more: more, less: less, speed: speed }, legacyOptions() );
 	};
 
 	// Wait for extensions (loaded after this script) to register before initializing.

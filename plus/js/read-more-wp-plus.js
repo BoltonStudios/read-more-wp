@@ -130,22 +130,24 @@
 			var closeRequested = false;
 
 			// Close on Escape or a backdrop click. If the pop-up is still opening, close it when it finishes.
-			var requestClose = function () {
+			var closeOptions = null;
+			var requestClose = function ( options ) {
 				if ( opening ) {
 					closeRequested = true;
+					closeOptions = options;
 				} else {
-					rmwp.toggle( t.wrap );
+					rmwp.toggle( t.wrap, null, options );
 				}
 			};
 
 			dialog.addEventListener( 'cancel', function ( event ) {
 				event.preventDefault();
-				requestClose();
+				requestClose( { restoreFocus: true } );
 			} );
 
 			dialog.addEventListener( 'click', function ( event ) {
 				if ( event.target === dialog ) {
-					requestClose();
+					requestClose( { restoreFocus: event.detail === 0 } );
 				}
 			} );
 
@@ -165,7 +167,7 @@
 				opening = false;
 				done();
 				if ( closeRequested ) {
-					rmwp.toggle( t.wrap );
+					rmwp.toggle( t.wrap, null, closeOptions );
 				}
 			} );
 		},
@@ -194,7 +196,10 @@
 				dialog.parentNode.removeChild( dialog );
 				dialogs.delete( t.wrap );
 
-				t.button.focus();
+				// Return focus to the button for keyboard users (see moveButton() in the main script).
+				if ( t.restoreFocus !== false ) {
+					t.button.focus();
+				}
 			} );
 		},
 	} );
