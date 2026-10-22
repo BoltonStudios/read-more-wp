@@ -106,6 +106,7 @@ Yes. Each `[end-read-more]` closes the most recent `[start-read-more]`.
 
 = 1.2.0 =
 * Date Released: 2026-10-18
+* Security: Updated Freemius SDK to version 2.13.5.
 * New Feature: Read More block for the block editor.
 * New Feature (Plus): Fade-out mode shows the start of long content with a fade and a "Show more" button.
 * New Feature (Plus): Button styles (text link, full width), alignment, colors, and corner radius.
