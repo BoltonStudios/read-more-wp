@@ -25,6 +25,14 @@ class Read_More_Wp_Settings {
      * @var      string    $plugin_name    The title of this plugin.
      */
     private $plugin_name;
+
+    /**
+     * Whether the tabs, sections, and fields have been built.
+     *
+     * @since    1.2.0
+     * @var      bool
+     */
+    private $built = false;
     
     /**
      * The ID of this plugin.
@@ -76,6 +84,21 @@ class Read_More_Wp_Settings {
         $this->plugin_name = $plugin_name;
         $this->plugin_slug = $plugin_slug;
         $this->version = $version;
+    }
+
+    /**
+     * Build the tabs, sections, and fields on first use. They contain translated labels,
+     * so they must not be built before the init action (WordPress 6.7+ warns otherwise).
+     *
+     * @since    1.2.0
+     */
+    private function rmwp_maybe_build() {
+
+        if ( $this->built ) {
+            return;
+        }
+
+        $this->built = true;
         $this->tabs = $this->rmwp_create_tabs();
         $this->sections = $this->rmwp_create_sections();
         $this->settings = $this->rmwp_create_settings();
@@ -165,6 +188,8 @@ class Read_More_Wp_Settings {
      */ 
     public function rmwp_set_tabs($tabs)
     {
+        $this->rmwp_maybe_build();
+
         $this->tabs = $tabs;
 
         return $this;
@@ -175,6 +200,8 @@ class Read_More_Wp_Settings {
      */ 
     public function rmwp_get_tabs()
     {
+        $this->rmwp_maybe_build();
+
         return $this->tabs;
     }
 
@@ -183,6 +210,8 @@ class Read_More_Wp_Settings {
      */ 
     public function rmwp_get_settings()
     {
+        $this->rmwp_maybe_build();
+
         return $this->settings;
     }
 
@@ -193,6 +222,8 @@ class Read_More_Wp_Settings {
      */ 
     public function rmwp_set_settings(array $settings)
     {
+        $this->rmwp_maybe_build();
+
         $this->settings = $settings;
 
         return $this;
@@ -205,6 +236,8 @@ class Read_More_Wp_Settings {
      */ 
     public function rmwp_get_sections()
     {
+        $this->rmwp_maybe_build();
+
         return $this->sections;
     }
 
@@ -217,6 +250,8 @@ class Read_More_Wp_Settings {
      */ 
     public function rmwp_set_sections(array $sections)
     {
+        $this->rmwp_maybe_build();
+
         $this->sections = $sections;
 
         return $this;

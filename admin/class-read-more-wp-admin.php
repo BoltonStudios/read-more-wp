@@ -83,7 +83,6 @@ class Read_More_Wp_Admin {
         $this->plugin_slug = $plugin_slug;
         $this->version = $version;
         $this->settings = $settings;
-        $this->tabs = $settings->rmwp_get_tabs();
 
         add_filter( 'rmwp_sanitize_rmwp_general_options', array( $this, 'rmwp_sanitize_general_options' ) );
 	}

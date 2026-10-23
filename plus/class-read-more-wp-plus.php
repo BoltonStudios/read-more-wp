@@ -97,9 +97,19 @@ class Read_More_Wp_Plus{
         $this->base_plugin = $base_plugin;
         $this->base_plugin_settings = $base_plugin->rmwp_get_plugin_settings();
         $this->base_plugin_admin = $base_plugin->rmwp_get_plugin_admin();
-        $this->plus_settings = $this->rmwp_add_plus_settings();
 
         $this->rmwp_init();
+    }
+
+    /**
+     * Add the Plus settings. Runs on init because the labels are translated.
+     *
+     * @since    1.2.0
+     */
+    function rmwp_setup_settings(){
+
+        $this->plus_settings = $this->rmwp_add_plus_settings();
+        $this->rmwp_get_base_plugin()->rmwp_set_plugin_settings( $this->plus_settings );
     }
 
     /**
@@ -109,9 +119,7 @@ class Read_More_Wp_Plus{
      */
     function rmwp_init(){
 
-        $this->rmwp_get_base_plugin()->rmwp_set_plugin_settings(
-            $this->rmwp_get_plus_settings()
-        );
+        add_action( 'init', array( $this, 'rmwp_setup_settings' ), 5 );
 
         add_filter( 'rmwp_toggle_options', array( $this, 'rmwp_filter_toggle_options' ), 10, 3 );
         add_filter( 'rmwp_block_editor_settings', array( $this, 'rmwp_filter_block_editor_settings' ) );
