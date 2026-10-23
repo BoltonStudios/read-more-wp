@@ -102,6 +102,8 @@ if ( function_exists( 'rmwp_fs' ) ) {
                     'has_paid_plans'      => true,
                     'menu'                => array(
                         'slug'           => 'read-more-wp',
+                        // After the opt-in screen, go straight to the settings.
+                        'first-path'     => 'options-general.php?page=read-more-wp',
                         'contact'        => false,
                         'support'        => false,
                         'parent'         => array(
@@ -119,6 +121,37 @@ if ( function_exists( 'rmwp_fs' ) ) {
 
         // Signal that SDK was initiated.
         do_action( 'rmwp_fs_loaded' );
+
+        /**
+         * The Freemius opt-in message for new installs.
+         *
+         * @since 1.2.0
+         */
+        function rmwp_fs_connect_message( $message, $user_first_name, $product_title ) {
+            return sprintf(
+                /* translators: %s: plugin name */
+                esc_html__( 'Opt in to get an email about security and feature updates to %s, plus occasional tips and offers. You\'ll also share some basic WordPress environment info, which helps us keep the plugin compatible with your site and theme.', 'read-more-wp' ),
+                '<b>' . esc_html( $product_title ) . '</b>'
+            );
+        }
+
+        /**
+         * The Freemius opt-in message for sites updating from an earlier version.
+         *
+         * @since 1.2.0
+         */
+        function rmwp_fs_connect_message_on_update( $message, $user_first_name, $product_title ) {
+            return rmwp_fs_connect_message( $message, $user_first_name, $product_title )
+                . '<br><br>'
+                . sprintf(
+                    /* translators: %s: plugin name */
+                    esc_html__( 'If you skip this, that\'s okay! %s will still work just fine.', 'read-more-wp' ),
+                    '<b>' . esc_html( $product_title ) . '</b>'
+                );
+        }
+
+        rmwp_fs()->add_filter( 'connect_message', 'rmwp_fs_connect_message', 10, 3 );
+        rmwp_fs()->add_filter( 'connect_message_on_update', 'rmwp_fs_connect_message_on_update', 10, 3 );
     }
 
     /**
