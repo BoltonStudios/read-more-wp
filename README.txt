@@ -105,8 +105,9 @@ Yes. Each `[end-read-more]` closes the most recent `[start-read-more]`.
 == Changelog ==
 
 = 1.2.0 =
-* Date Released: 2026-10-18
+* Date Released: 2026-10-23
 * Security: Updated Freemius SDK to version 2.13.5.
+* Security: Sanitized the speed and animation shortcode attributes.
 * New Feature: Read More block for the block editor.
 * New Feature (Plus): Fade-out mode shows the start of long content with a fade and a "Show more" button.
 * New Feature (Plus): Button styles (text link, full width), alignment, colors, and corner radius.
@@ -114,18 +115,14 @@ Yes. Each `[end-read-more]` closes the most recent `[start-read-more]`.
 * Improvement (Plus): Pop-ups now use an accessible dialog that traps keyboard focus and closes with Escape or a click outside.
 * Improvement: Rewritten without jQuery. Scripts and styles now load only on pages that use them.
 * Improvement: Content stays visible when JavaScript is disabled.
+* Accessibility: The toggle button now reports its expanded/collapsed state to screen readers.
+* Bug fix: Button labels with apostrophes or ampersands no longer display HTML codes (e.g., "Don&#039;t").
+* Bug fix: Using a pop-up toggle no longer breaks the layout of later toggles on the same page.
+* Bug fix: inline=false is no longer treated as inline=true.
 * Bug fix: Shortcodes on their own line in the block editor no longer produce invalid HTML.
 * Bug fix: The settings page now works on sites installed in a subdirectory.
 * Settings are now sanitized when saved.
 * Requires WordPress 6.3 and PHP 7.4 or later.
-
-= 1.1.8 =
-* Date Released: 2026-10-18
-* Security: Sanitized the speed and animation shortcode attributes.
-* Bug fix: Button labels with apostrophes or ampersands no longer display HTML codes (e.g., "Don&#039;t").
-* Bug fix: Using a pop-up toggle no longer breaks the layout of later toggles on the same page.
-* Bug fix: inline=false is no longer treated as inline=true.
-* Accessibility: The toggle button now reports its expanded/collapsed state to screen readers.
 
 = 1.1.7 =
 * Date Released: 2026-10-18
