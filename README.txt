@@ -95,6 +95,15 @@ Target `.rmwp-button-wrap button` in your theme's CSS, or set the `--rmwp-button
 
 Yes. Each `[end-read-more]` closes the most recent `[start-read-more]`.
 
+== External services ==
+
+**Freemius** handles licensing, updates, and optional usage data.
+* If you opt in: sends your name, email, site address, and WordPress environment info (such as WordPress, PHP, and plugin versions). Opting in is optional.
+* Plus: sends your license key and site address to activate the license and check for updates.
+* [Freemius Terms](https://freemius.com/terms/), [Freemius Privacy Policy](https://freemius.com/privacy/)
+
+The plugin connects to no other services.
+
 == Screenshots ==
 
 1. The shortcodes wrapping text in the block editor. Highlights added for visibility.
